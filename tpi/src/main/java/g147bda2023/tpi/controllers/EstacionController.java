@@ -11,11 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/estaciones")
 public class EstacionController {
     private final EstacionService estacionService;
 
-    @GetMapping
+    @GetMapping("/api/estaciones/{id}")
     public String listId(@PathVariable Long id) {
         return estacionService.findById(id).toString();
     }
