@@ -7,17 +7,20 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="Alquileres" />
-        <module name="ApiGateway" />
-        <module name="Estaciones" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="Alquileres" target="1.5" />
+      <module name="ApiGateway" target="1.5" />
+      <module name="Estaciones" target="1.5" />
+      <module name="tpi" target="17" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="Alquileres" options="-parameters" />
-      <module name="ApiGateway" options="-parameters" />
-      <module name="Estaciones" options="-parameters" />
+      <module name="Alquileres" options="" />
+      <module name="ApiGateway" options="" />
+      <module name="Estaciones" options="" />
     </option>
   </component>
 </project>
