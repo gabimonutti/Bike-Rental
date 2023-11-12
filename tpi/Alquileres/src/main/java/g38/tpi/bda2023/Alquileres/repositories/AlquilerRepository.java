@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AlquilerRepository extends JpaRepository<Alquiler, Long> {
-    @Query("SELECT coalesce(max(id), 0) from Alquiler")
+    @Query(value = "SELECT count(*) FROM ESTACIONES;", nativeQuery = true)
     public Long getMaxId();
 }

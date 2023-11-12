@@ -21,7 +21,7 @@ public class AlquilerResponse {
     private Long id;
     private Long idCliente;
     private int estado;
-    private Estacion estacionRetiro;
+    private Estacion estacionRetiro; //TODO: hacer que devuelva estacionResponse
     private Estacion estacionDevolucion;
     private LocalDateTime fechaHoraRetiro;
     private LocalDateTime fechaHoraDevolucion;
