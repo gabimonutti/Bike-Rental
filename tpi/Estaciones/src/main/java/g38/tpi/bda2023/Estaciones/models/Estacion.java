@@ -8,21 +8,19 @@ import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
 
-@Entity(name = "ESTACIONES")
+@Entity(name = Estacion.TABLE_NAME)
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Estacion {
+    public static final String TABLE_NAME = "ESTACIONES";
     @Id
     Long id;
-
     String nombre;
-
     @Column(name = "FECHA_HORA_CREACION")
     LocalDateTime fechaHoraCreacion;
-
     double latitud;
     double longitud;
 }
