@@ -6,6 +6,8 @@ import jakarta.persistence.Id;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
+
 @Entity(name = "TARIFAS")
 @Getter
 @Setter
@@ -33,14 +35,14 @@ public class Tarifa {
     private int anio;
 
     @Column(name = "MONTO_FIJO_ALQUILER")
-    private double montoFijoAlquiler;
+    private BigDecimal montoFijoAlquiler;
 
     @Column(name = "MONTO_MINUTO_FRACCION")
-    private double montoMinutoFraccion;
+    private BigDecimal montoMinutoFraccion;
 
     @Column(name = "MONTO_HORA")
-    private double montoHora;
+    private BigDecimal montoHora;
 
     @Column(name = "MONTO_KM")
-    private double montoKm;
+    private BigDecimal montoKm;
 }
