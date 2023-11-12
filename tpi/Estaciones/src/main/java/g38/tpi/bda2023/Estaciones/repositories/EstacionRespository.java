@@ -7,6 +7,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EstacionRespository extends JpaRepository<Estacion, Long> {
-    @Query("SELECT coalesce(max(id),0) from Estacion")
-    Long getMaxId();
 }
