@@ -16,15 +16,13 @@ import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Estacion {
     @Id
-    private Long id;
+    Long id;
 
-    private String nombre;
+    String nombre;
 
     @Column(name = "FECHA_HORA_CREACION")
-    private LocalDateTime fechaHoraCreacion;
+    LocalDateTime fechaHoraCreacion;
 
-    private double latitud;
-    private double longitud;
-
-    // Duda: Si yo quiero crear una clase coordenadas, como mapeo lat y long de la db con el objeto?
+    double latitud;
+    double longitud;
 }
