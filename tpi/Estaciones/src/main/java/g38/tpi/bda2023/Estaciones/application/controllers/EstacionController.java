@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping("/api/estaciones")
 @RestController
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
@@ -30,6 +29,20 @@ public class EstacionController {
             return ResponseHandler.success();
         } catch (IllegalArgumentException e) {
             return ResponseHandler.notFound();
+        } catch (Exception e) {
+            return ResponseHandler.internalError();
+        }
+    }
+    @GetMapping("/api/estaciones-disponibles")
+    public ResponseEntity<Object> getAll() {
+        try {
+            val estaciones = estacionService.findAll()
+                    .stream()
+                    .map(EstacionResponse::from)
+                    .toList();
+            return ResponseHandler.success(estaciones);
+        } catch (IllegalArgumentException e) {
+            return ResponseHandler.badRequest(e.getMessage());
         } catch (Exception e) {
             return ResponseHandler.internalError();
         }
