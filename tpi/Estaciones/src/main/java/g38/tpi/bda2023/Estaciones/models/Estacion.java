@@ -25,4 +25,6 @@ public class Estacion {
 
     private double latitud;
     private double longitud;
+
+    // Duda: Si yo quiero crear una clase coordenadas, como mapeo lat y long de la db con el objeto?
 }
