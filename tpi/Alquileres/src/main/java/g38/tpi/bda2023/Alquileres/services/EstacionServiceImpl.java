@@ -17,7 +17,11 @@ public class EstacionServiceImpl implements EstacionService {
                         template.getForEntity("http://localhost:8082/api/estaciones/{id}",
                                 EstacionResponse.class, id);
                 if(res.getStatusCode().is2xxSuccessful()) {
-                    return 
+                    EstacionResponse estResp = res.getBody();
+                    return Optional.of(new Estacion(estResp.getId(), estResp.getNombre(), estResp.getFechaHoraCreacion(), estResp.getLatitud(), estResp.getLongitud()));
+                }
+                else {
+                    return null;
                 }
             }
             catch (HttpClientErrorException ex) {

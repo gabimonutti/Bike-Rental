@@ -1,7 +1,8 @@
 package g38.tpi.bda2023.Alquileres.services;
 
 import g38.tpi.bda2023.Alquileres.models.Alquiler;
+import g38.tpi.bda2023.Alquileres.models.Estacion;
 
 public interface AlquilerService {
-    Alquiler iniciar(long idCliente, long idEstRetiro);
+    Alquiler iniciar(long idCliente, Estacion EstRetiro);
 }
