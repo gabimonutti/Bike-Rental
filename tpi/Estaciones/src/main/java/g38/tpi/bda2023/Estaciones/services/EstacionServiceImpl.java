@@ -33,11 +33,7 @@ public class EstacionServiceImpl implements EstacionService{
     @Override
     public Estacion create(String nombre, double latitud, double longitud) {
         val estacionId = identifierRepository.nextValue(Estacion.TABLE_NAME);
-
-        // TODO: Cambiar tipo de dato de tiempo
-
-        val fechaHoraCreacion = LocalDateTime.now();
-        val newEstacion = new Estacion((long)estacionId, nombre, fechaHoraCreacion, latitud, longitud);
+        val newEstacion = new Estacion((long)estacionId, nombre, latitud, longitud);
         return estacionRespository.save(newEstacion);
     }
 }

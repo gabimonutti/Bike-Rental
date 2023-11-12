@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 public class EstacionResponse {
     Long id;
     String nombre;
-    LocalDateTime fechaHoraCreacion;
     double latitud;
     double longitud;
 
@@ -22,7 +21,6 @@ public class EstacionResponse {
         return EstacionResponse.builder()
                 .id(estacion.getId())
                 .nombre(estacion.getNombre())
-                .fechaHoraCreacion(estacion.getFechaHoraCreacion())
                 .latitud(estacion.getLatitud())
                 .longitud(estacion.getLongitud())
                 .build();

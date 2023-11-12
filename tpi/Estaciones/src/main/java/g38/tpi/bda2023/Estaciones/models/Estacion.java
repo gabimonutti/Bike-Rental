@@ -19,8 +19,6 @@ public class Estacion {
     @Id
     Long id;
     String nombre;
-    @Column(name = "FECHA_HORA_CREACION")
-    LocalDateTime fechaHoraCreacion;
     double latitud;
     double longitud;
 }
