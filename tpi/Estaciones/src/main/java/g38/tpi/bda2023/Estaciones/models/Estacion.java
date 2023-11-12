@@ -16,13 +16,13 @@ import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Estacion {
     @Id
-    private Long id;
+    Long id;
 
-    private String nombre;
+    String nombre;
 
     @Column(name = "FECHA_HORA_CREACION")
-    private LocalDateTime fechaHoraCreacion;
+    LocalDateTime fechaHoraCreacion;
 
-    private double latitud;
-    private double longitud;
+    double latitud;
+    double longitud;
 }
