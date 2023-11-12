@@ -4,5 +4,5 @@ import g38.tpi.bda2023.Alquileres.models.Alquiler;
 import g38.tpi.bda2023.Alquileres.models.Estacion;
 
 public interface AlquilerService {
-    Alquiler iniciar(long idCliente, Estacion EstRetiro);
+    Alquiler start(long idCliente, Estacion EstRetiro);
 }

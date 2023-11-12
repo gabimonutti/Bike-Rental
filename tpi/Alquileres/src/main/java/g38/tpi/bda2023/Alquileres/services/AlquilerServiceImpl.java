@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class AlquilerServiceImpl implements AlquilerService{
     private final AlquilerRepository alquilerRepository;
 
-    public Alquiler iniciar(long idCliente, Estacion estRetiro) {
+    public Alquiler start(long idCliente, Estacion estRetiro) {
         long id = alquilerRepository.getMaxId() + 1;
         LocalDateTime fechaHoraRetiro = LocalDateTime.now();
         // TODO: verificar si la fecha de retiro es promocional, si es asi asignarle la tarifa correspondiente, sino

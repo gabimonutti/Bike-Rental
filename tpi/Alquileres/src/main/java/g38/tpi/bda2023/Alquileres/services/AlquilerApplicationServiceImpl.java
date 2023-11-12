@@ -10,10 +10,10 @@ import org.springframework.stereotype.Service;
 public class AlquilerApplicationServiceImpl implements AlquilerApplicationService {
     private final AlquilerService alquilerService;
     private final EstacionService estacionService;
-    public Alquiler iniciar(long idCliente, long idEstRetiro) {
+    public Alquiler start(long idCliente, long idEstRetiro) {
         Estacion estRetiro = estacionService.findById(idEstRetiro)
                 .orElseThrow(() -> new IllegalArgumentException("Estacion Retiro Not Found"));
 
-        return alquilerService.iniciar(idCliente, estRetiro);
+        return alquilerService.start(idCliente, estRetiro);
     }
 }
