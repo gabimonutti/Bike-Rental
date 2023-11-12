@@ -11,6 +11,8 @@ public class AlquilerServiceImpl implements AlquilerService{
     private final AlquilerRepository alquilerRepository;
 
     public Alquiler iniciar(long idCliente, long idEstRetiro) {
+        long id = alquilerRepository.getMaxId() + 1;
+
         return null;
     }
 }
