@@ -9,6 +9,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
@@ -24,7 +25,7 @@ public class AlquilerResponse {
     private Estacion estacionDevolucion;
     private LocalDateTime fechaHoraRetiro;
     private LocalDateTime fechaHoraDevolucion;
-    private double monto;
+    private BigDecimal monto;
     private Tarifa tarifa;
 
     public static AlquilerResponse from (Alquiler alquiler) {

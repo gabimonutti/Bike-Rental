@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity(name = "ALQUILERES")
@@ -35,7 +36,7 @@ public class Alquiler {
     @Column(name = "FECHA_HORA_DEVOLUCION")
     private LocalDateTime fechaHoraDevolucion;
 
-    private double monto;
+    private BigDecimal monto;
 
     @ManyToOne
     @JoinColumn(name = "ID_TARIFA")
