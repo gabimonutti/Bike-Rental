@@ -18,6 +18,9 @@ public class EstacionResponse {
     double longitud;
 
     public static EstacionResponse from(Estacion estacion) {
+        if(estacion == null) {
+            return null;
+        }
         return EstacionResponse.builder()
                 .id(estacion.getId())
                 .nombre(estacion.getNombre())

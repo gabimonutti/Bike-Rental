@@ -4,13 +4,11 @@ import g38.tpi.bda2023.Alquileres.application.ResponseHandler;
 import g38.tpi.bda2023.Alquileres.application.requests.CreateAlquilerRequest;
 import g38.tpi.bda2023.Alquileres.application.requests.EndAlquilerRequest;
 import g38.tpi.bda2023.Alquileres.application.response.AlquilerResponse;
-import g38.tpi.bda2023.Alquileres.models.Alquiler;
 import g38.tpi.bda2023.Alquileres.services.AlquilerApplicationService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import lombok.val;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,8 +22,8 @@ public class AlquilerController {
     @PostMapping
     public ResponseEntity<Object> create(@Valid @RequestBody CreateAlquilerRequest request) {
         try {
-            Alquiler alquiler = alquilerApplicationService.start(request.getIdCliente(), request.getIdEstRetiro());
-            return ResponseHandler.created(AlquilerResponse.from(alquiler));
+            AlquilerResponse alquilerResponse = alquilerApplicationService.start(request.getIdCliente(), request.getIdEstRetiro());
+            return ResponseHandler.created(alquilerResponse);
         } catch(IllegalArgumentException e) {
             return ResponseHandler.badRequest(e.getMessage());
         } catch (Exception e) {
@@ -36,13 +34,13 @@ public class AlquilerController {
     @PatchMapping("/finalizar")
     public ResponseEntity<Object> end(@Valid @RequestBody EndAlquilerRequest request) {
         try {
-            Alquiler updatedAlquiler = alquilerApplicationService.end(request.getIdAlquiler(),
-                    request.getIdEstacionDevolucion());
-            return ResponseHandler.success(AlquilerResponse.from(updatedAlquiler));
+            AlquilerResponse updatedAlquiler = alquilerApplicationService.end(request.getIdAlquiler(),
+                    request.getIdEstacionDevolucion(), request.getMoneda());
+            return ResponseHandler.success(updatedAlquiler);
         } catch (IllegalArgumentException e) {
             return ResponseHandler.badRequest(e.getMessage());
-        } /*catch (Exception e) {
+        } catch (Exception e) {
             return ResponseHandler.internalError();
-        }*/
+        }
     }
 }

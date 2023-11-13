@@ -18,13 +18,13 @@ import java.net.http.HttpHeaders;
 @RequiredArgsConstructor
 public class ExchangeServiceImpl implements ExchangeService {
 
-    public double getMonto(ExchangeRequest exchangeRequest){
+    @Override public double getMonto(String moneda_destino, Double importe){
 
         try {
             RestTemplate template = new RestTemplate();
 
             // Creación de la entidad a enviar
-            HttpEntity<ExchangeRequest> entity = new HttpEntity<>(exchangeRequest);
+            HttpEntity<ExchangeRequest> entity = new HttpEntity<>(new ExchangeRequest(moneda_destino, importe));
 
             // respuesta de la petición tendrá en su cuerpo a un objeto del tipo ExchangeResponse
             //param: 1) La uri a invocar; 2) La entidad que se quiere enviar; 3) El tipo que se espera como respuesta.

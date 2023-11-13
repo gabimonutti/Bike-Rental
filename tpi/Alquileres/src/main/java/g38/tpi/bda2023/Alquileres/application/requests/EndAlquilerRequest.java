@@ -12,4 +12,5 @@ public class EndAlquilerRequest {
     long idAlquiler;
     @NotNull
     long idEstacionDevolucion;
+    String moneda;
 }
