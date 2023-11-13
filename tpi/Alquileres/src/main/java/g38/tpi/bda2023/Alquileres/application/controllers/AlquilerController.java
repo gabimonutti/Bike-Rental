@@ -2,6 +2,7 @@ package g38.tpi.bda2023.Alquileres.application.controllers;
 
 import g38.tpi.bda2023.Alquileres.application.ResponseHandler;
 import g38.tpi.bda2023.Alquileres.application.requests.CreateAlquilerRequest;
+import g38.tpi.bda2023.Alquileres.application.requests.EndAlquilerRequest;
 import g38.tpi.bda2023.Alquileres.application.response.AlquilerResponse;
 import g38.tpi.bda2023.Alquileres.models.Alquiler;
 import g38.tpi.bda2023.Alquileres.services.AlquilerApplicationService;
@@ -10,10 +11,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/api/alquileres")
 @RestController
@@ -34,5 +32,8 @@ public class AlquilerController {
         }
     }
 
-    
+    @PatchMapping("/finalizar")
+    public ResponseEntity<Object> end(@Valid @RequestBody EndAlquilerRequest request) {
+        return null; //TODO: Implementar llamada a end alquiler
+    }
 }
