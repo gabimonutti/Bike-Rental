@@ -22,23 +22,23 @@ public class Alquiler {
 
     private int estado;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "ESTACION_RETIRO")
     private Estacion estacionRetiro;
 
     @ManyToOne
-    @JoinColumn(name = "ESTACION_DEVOLUCION")
+    @JoinColumn(name = "ESTACION_DEVOLUCION", nullable = true)
     private Estacion estacionDevolucion;
 
-    @Column(name = "FECHA_HORA_RETIRO")
+    @Column(name = "FECHA_HORA_RETIRO", nullable = true)
     private LocalDateTime fechaHoraRetiro;
 
-    @Column(name = "FECHA_HORA_DEVOLUCION")
+    @Column(name = "FECHA_HORA_DEVOLUCION", nullable = true)
     private LocalDateTime fechaHoraDevolucion;
 
     private BigDecimal monto;
 
     @ManyToOne
-    @JoinColumn(name = "ID_TARIFA")
+    @JoinColumn(name = "ID_TARIFA", nullable = true)
     private Tarifa tarifa;
 }

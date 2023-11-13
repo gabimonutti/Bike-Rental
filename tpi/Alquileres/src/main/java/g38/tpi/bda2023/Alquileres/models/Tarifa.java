@@ -21,7 +21,7 @@ public class Tarifa {
     @Column(name = "TIPO_TARIFA")
     private int tipoTarifa;
 
-    @Column(name = "DEFINICIÓN")
+    @Column(name = "DEFINICION")
     private char definicion;
 
     @Column(name = "DIA_SEMANA")
