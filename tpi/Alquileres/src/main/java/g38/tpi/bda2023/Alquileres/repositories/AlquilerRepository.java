@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AlquilerRepository extends JpaRepository<Alquiler, Long> {
-    @Query(value = "SELECT count(*) FROM ESTACIONES;", nativeQuery = true)
+    @Query(value = "SELECT count(*) FROM ALQUILERES;", nativeQuery = true)
     public Long getMaxId();
 }
