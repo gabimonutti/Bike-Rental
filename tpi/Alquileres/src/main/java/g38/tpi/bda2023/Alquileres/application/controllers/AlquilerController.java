@@ -29,8 +29,10 @@ public class AlquilerController {
             return ResponseHandler.created(AlquilerResponse.from(alquiler));
         } catch(IllegalArgumentException e) {
             return ResponseHandler.badRequest(e.getMessage());
-        } /*catch (Exception e) {
+        } catch (Exception e) {
             return ResponseHandler.internalError();
-        }*/
+        }
     }
+
+    
 }
