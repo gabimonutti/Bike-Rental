@@ -4,6 +4,7 @@ import g38.tpi.bda2023.Alquileres.application.ResponseHandler;
 import g38.tpi.bda2023.Alquileres.application.requests.CreateAlquilerRequest;
 import g38.tpi.bda2023.Alquileres.application.requests.EndAlquilerRequest;
 import g38.tpi.bda2023.Alquileres.application.response.AlquilerResponse;
+import g38.tpi.bda2023.Alquileres.application.response.InicioAlquilerResponse;
 import g38.tpi.bda2023.Alquileres.services.AlquilerApplicationService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -22,8 +23,8 @@ public class AlquilerController {
     @PostMapping
     public ResponseEntity<Object> create(@Valid @RequestBody CreateAlquilerRequest request) {
         try {
-            AlquilerResponse alquilerResponse = alquilerApplicationService.start(request.getIdCliente(), request.getIdEstRetiro());
-            return ResponseHandler.created(alquilerResponse);
+            InicioAlquilerResponse alquiler = alquilerApplicationService.start(request.getIdCliente(), request.getIdEstRetiro());
+            return ResponseHandler.created(alquiler);
         } catch(IllegalArgumentException e) {
             return ResponseHandler.badRequest(e.getMessage());
         } catch (Exception e) {

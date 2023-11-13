@@ -1,6 +1,7 @@
 package g38.tpi.bda2023.Alquileres.services;
 
 import g38.tpi.bda2023.Alquileres.application.response.AlquilerResponse;
+import g38.tpi.bda2023.Alquileres.application.response.InicioAlquilerResponse;
 import g38.tpi.bda2023.Alquileres.models.Alquiler;
 import g38.tpi.bda2023.Alquileres.models.Estacion;
 import lombok.RequiredArgsConstructor;
@@ -12,23 +13,24 @@ public class AlquilerApplicationServiceImpl implements AlquilerApplicationServic
     private final AlquilerService alquilerService;
     private final EstacionService estacionService;
     private final ExchangeService exchangeService;
-    @Override public AlquilerResponse start(long idCliente, long idEstRetiro) {
+    @Override public InicioAlquilerResponse start(long idCliente, long idEstRetiro) {
         Estacion estRetiro = estacionService.findById(idEstRetiro)
                 .orElseThrow(() -> new IllegalArgumentException("Estacion Retiro Not Found"));
 
-        return AlquilerResponse.from(alquilerService.start(idCliente, estRetiro));
+        return InicioAlquilerResponse.from(alquilerService.start(idCliente, estRetiro));
     }
 
     @Override public AlquilerResponse end(long idAlquiler, long idEstacionDevolucion, String moneda) {
         Estacion estDevolucion = estacionService.findById(idEstacionDevolucion)
                 .orElseThrow(() -> new IllegalArgumentException("Estacion Devolucion Not Found"));
+
         Alquiler alquiler = alquilerService.end(idAlquiler, estDevolucion);
-        AlquilerResponse response = AlquilerResponse.from(alquiler);
-        if (moneda != null) {
-            String montoExchanged = String.format("%.02f", exchangeService.getMonto(moneda, alquiler.getMonto().doubleValue()));
-            response.setMonto(montoExchanged);
+        AlquilerResponse alquilerResponse = AlquilerResponse.from(alquiler);
+
+        if (exchangeService.ExchangesAvailable.contains(moneda)) {
+            double montoExchanged = exchangeService.getMonto(moneda, alquiler.getMonto().doubleValue());
+            alquilerResponse.setMonto(String.format("%.02f", montoExchanged));
         }
-        // TODO: Validar tipo de moneda
-        return response;
+        return alquilerResponse;
     }
 }

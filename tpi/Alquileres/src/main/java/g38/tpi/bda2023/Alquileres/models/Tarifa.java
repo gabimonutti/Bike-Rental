@@ -16,33 +16,33 @@ import java.math.BigDecimal;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Tarifa {
     @Id
-    private Long id;
+    Long id;
 
     @Column(name = "TIPO_TARIFA")
-    private Integer tipoTarifa;
+    Integer tipoTarifa;
 
     @Column(name = "DEFINICION")
-    private char definicion;
+    String definicion;
 
     @Column(name = "DIA_SEMANA")
-    private Integer diaSemana;
+    Integer diaSemana;
 
     @Column(name = "DIA_MES")
-    private Integer diaMes;
+    Integer diaMes;
 
-    private Integer mes;
+    Integer mes;
 
-    private Integer anio;
+    Integer anio;
 
     @Column(name = "MONTO_FIJO_ALQUILER")
-    private BigDecimal montoFijoAlquiler;
+    BigDecimal montoFijoAlquiler;
 
     @Column(name = "MONTO_MINUTO_FRACCION")
-    private BigDecimal montoMinutoFraccion;
+    BigDecimal montoMinutoFraccion;
 
     @Column(name = "MONTO_HORA")
-    private BigDecimal montoHora;
+    BigDecimal montoHora;
 
     @Column(name = "MONTO_KM")
-    private BigDecimal montoKm;
+    BigDecimal montoKm;
 }
