@@ -8,14 +8,18 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class AlquilerServiceImpl implements AlquilerService{
     private final AlquilerRepository alquilerRepository;
+    private final TarifaService tarifaService;
+    private final DistanciaService distanciaService;
 
-    public Alquiler start(long idCliente, Estacion estRetiro) {
+    @Override public Alquiler start(long idCliente, Estacion estRetiro) {
         long id = alquilerRepository.getMaxId() + 1;
         LocalDateTime fechaHoraRetiro = LocalDateTime.now();
         Tarifa tarifa = null;
@@ -23,7 +27,7 @@ public class AlquilerServiceImpl implements AlquilerService{
         return alquilerRepository.save(alquiler);
     }
 
-    public Alquiler end(long idAlquiler, long idEstacionDevolucion, Estacion estDevolucion) {
+    @Override public Alquiler end(long idAlquiler, Estacion estDevolucion) {
         Alquiler alquiler = alquilerRepository.findById(idAlquiler)
                 .orElseThrow(() -> new IllegalArgumentException("Alquiler not found"));
         alquiler.setEstado(2);
@@ -32,15 +36,46 @@ public class AlquilerServiceImpl implements AlquilerService{
         Tarifa tarifa = chooseTarifa(alquiler);
         alquiler.setTarifa(tarifa);
         BigDecimal monto = calculateMonto(alquiler, tarifa);
-        //TODO: return alquilerRepository.save(alquiler);
-        return null;
+        return alquilerRepository.save(alquiler);
     }
 
     private Tarifa chooseTarifa(Alquiler alquiler) {
-        return null;
+        int diaMes = alquiler.getFechaHoraRetiro().getDayOfMonth();
+        int mes = alquiler.getFechaHoraRetiro().getMonthValue();
+        int anio = alquiler.getFechaHoraRetiro().getYear();
+        Optional<Tarifa> tarifa = tarifaService.findTarifaFecha('C', diaMes, mes, anio);
+
+        if(tarifa.isEmpty()) {
+            int diaSemana = alquiler.getFechaHoraDevolucion().getDayOfWeek().getValue();
+            tarifa = tarifaService.findTarifaDiaSemana(diaSemana);
+        }
+        if(tarifa.isPresent()) { return tarifa.get(); }
+        else {
+            throw new IllegalArgumentException("Tarifa not found");
+        }
     }
 
     private BigDecimal calculateMonto(Alquiler alquiler, Tarifa tarifa) {
-        return null; // TODO: calculate monto
+        BigDecimal monto = new BigDecimal("0");
+        monto = monto.add(tarifa.getMontoFijoAlquiler());
+        Duration duration = Duration.between(alquiler.getFechaHoraRetiro(), alquiler.getFechaHoraDevolucion());
+        long minutes;
+        try {
+            minutes = duration.toMinutes();
+        }
+        catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("FechaHoraDevolucion is too far form FechaHoraRetiro");
+        }
+        if(minutes <= 31) {
+            monto = monto.add(tarifa.getMontoMinutoFraccion().multiply(new BigDecimal(minutes)));
+        }
+        else {
+            monto = monto.add(tarifa.getMontoHora().multiply(new BigDecimal(duration.toHours())));
+        }
+        double distanciaKm = distanciaService.calcularDistancia(alquiler.getEstacionDevolucion().getLatitud(),
+                alquiler.getEstacionDevolucion().getLongitud(), alquiler.getEstacionRetiro().getLatitud(),
+                alquiler.getEstacionRetiro().getLongitud()) / 1000; // devuelve valor negativo?
+        monto = monto.add(tarifa.getMontoKm().multiply(new BigDecimal(distanciaKm)));
+        return monto;
     }
 }

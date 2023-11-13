@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.val;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +35,14 @@ public class AlquilerController {
 
     @PatchMapping("/finalizar")
     public ResponseEntity<Object> end(@Valid @RequestBody EndAlquilerRequest request) {
-        return null; //TODO: Implementar llamada a end alquiler
+        try {
+            Alquiler updatedAlquiler = alquilerApplicationService.end(request.getIdAlquiler(),
+                    request.getIdEstacionDevolucion());
+            return ResponseHandler.success(AlquilerResponse.from(updatedAlquiler));
+        } catch (IllegalArgumentException e) {
+            return ResponseHandler.badRequest(e.getMessage());
+        } catch (Exception e) {
+            return ResponseHandler.internalError();
+        }
     }
 }
