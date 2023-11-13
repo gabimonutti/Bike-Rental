@@ -41,8 +41,8 @@ public class AlquilerController {
             return ResponseHandler.success(AlquilerResponse.from(updatedAlquiler));
         } catch (IllegalArgumentException e) {
             return ResponseHandler.badRequest(e.getMessage());
-        } catch (Exception e) {
+        } /*catch (Exception e) {
             return ResponseHandler.internalError();
-        }
+        }*/
     }
 }

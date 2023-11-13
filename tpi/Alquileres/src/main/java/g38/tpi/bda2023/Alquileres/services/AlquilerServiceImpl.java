@@ -22,6 +22,7 @@ public class AlquilerServiceImpl implements AlquilerService{
     @Override public Alquiler start(long idCliente, Estacion estRetiro) {
         long id = alquilerRepository.getMaxId() + 1;
         LocalDateTime fechaHoraRetiro = LocalDateTime.now();
+        //LocalDateTime fechaHoraRetiro = LocalDateTime.of(2023, 10, 16, 4, 10);
         Tarifa tarifa = null;
         Alquiler alquiler = new Alquiler(id, idCliente, 1, estRetiro, null, fechaHoraRetiro, null, null,  tarifa);
         return alquilerRepository.save(alquiler);
@@ -30,12 +31,14 @@ public class AlquilerServiceImpl implements AlquilerService{
     @Override public Alquiler end(long idAlquiler, Estacion estDevolucion) {
         Alquiler alquiler = alquilerRepository.findById(idAlquiler)
                 .orElseThrow(() -> new IllegalArgumentException("Alquiler not found"));
+        if(alquiler.getEstado() == 2) { throw new IllegalArgumentException("Alquiler already finished"); }
         alquiler.setEstado(2);
         alquiler.setEstacionDevolucion(estDevolucion);
         alquiler.setFechaHoraDevolucion(LocalDateTime.now());
         Tarifa tarifa = chooseTarifa(alquiler);
         alquiler.setTarifa(tarifa);
         BigDecimal monto = calculateMonto(alquiler, tarifa);
+        alquiler.setMonto(monto);
         return alquilerRepository.save(alquiler);
     }
 
@@ -74,7 +77,7 @@ public class AlquilerServiceImpl implements AlquilerService{
         }
         double distanciaKm = distanciaService.calcularDistancia(alquiler.getEstacionDevolucion().getLatitud(),
                 alquiler.getEstacionDevolucion().getLongitud(), alquiler.getEstacionRetiro().getLatitud(),
-                alquiler.getEstacionRetiro().getLongitud()) / 1000; // devuelve valor negativo?
+                alquiler.getEstacionRetiro().getLongitud()) / 1000;
         monto = monto.add(tarifa.getMontoKm().multiply(new BigDecimal(distanciaKm)));
         return monto;
     }
