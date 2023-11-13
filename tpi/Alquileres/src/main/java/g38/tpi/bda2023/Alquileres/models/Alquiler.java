@@ -41,4 +41,12 @@ public class Alquiler {
     @ManyToOne
     @JoinColumn(name = "ID_TARIFA", nullable = true)
     private Tarifa tarifa;
+
+    public Alquiler(Long id, Long idCliente, int estado, Estacion estacionRetiro, LocalDateTime fechaHoraRetiro) {
+        this.id = id;
+        this.idCliente = idCliente;
+        this.estado = estado;
+        this.estacionRetiro = estacionRetiro;
+        this.fechaHoraRetiro = fechaHoraRetiro;
+    }
 }

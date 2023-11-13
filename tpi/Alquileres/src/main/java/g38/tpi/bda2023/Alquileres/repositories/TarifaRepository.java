@@ -8,7 +8,7 @@ import java.util.Optional;
 
 @Repository
 public interface TarifaRepository extends JpaRepository<Tarifa, Long> {
-    Optional<Tarifa> findByDefinicionAndDiaMesAndMesAndAnio(char definicion, int diaMes, int mes, int anio);
+    Optional<Tarifa> findByDefinicionAndDiaMesAndMesAndAnio(String definicion, int diaMes, int mes, int anio);
 
     Optional<Tarifa> findByDiaSemana(int diaSemana);
 }

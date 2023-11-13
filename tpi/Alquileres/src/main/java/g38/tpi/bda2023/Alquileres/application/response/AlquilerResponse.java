@@ -11,6 +11,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -21,12 +22,12 @@ public class AlquilerResponse {
     private Long id;
     private Long idCliente;
     private int estado;
-    private EstacionResponse estacionRetiro; //TODO: hacer que devuelva estacionResponse
+    private EstacionResponse estacionRetiro;
     private EstacionResponse estacionDevolucion;
     private LocalDateTime fechaHoraRetiro;
     private LocalDateTime fechaHoraDevolucion;
     private String monto;
-    private Tarifa tarifa;
+    private Object tarifa;
 
     public static AlquilerResponse from (Alquiler alquiler) {
         return AlquilerResponse.builder()
@@ -39,7 +40,9 @@ public class AlquilerResponse {
                 .fechaHoraDevolucion(alquiler.getFechaHoraDevolucion())
                 // devolvemos el monto en string por precision de centavos y redondeamos a 2 digitos
                 .monto((alquiler.getMonto() == null)?null:String.format("%.02f", alquiler.getMonto().floatValue()))
-                .tarifa(alquiler.getTarifa())
+                .tarifa(Objects.equals(alquiler.getTarifa().getDefinicion(), "S") ?
+                        TarifaSResponse.from(alquiler.getTarifa()) :
+                        TarifaCResponse.from(alquiler.getTarifa()))
                 .build();
     }
 }

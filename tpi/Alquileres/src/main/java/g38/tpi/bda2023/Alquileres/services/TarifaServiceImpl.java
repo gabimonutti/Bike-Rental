@@ -15,7 +15,7 @@ import java.util.Optional;
 public class TarifaServiceImpl implements TarifaService {
     TarifaRepository tarifaRepository;
 
-    @Override public Optional<Tarifa> findTarifaFecha(char definicion, int diaMes, int mes, int anio) {
+    @Override public Optional<Tarifa> findTarifaFecha(String definicion, int diaMes, int mes, int anio) {
         return tarifaRepository.findByDefinicionAndDiaMesAndMesAndAnio(definicion, diaMes, mes, anio);
     }
 

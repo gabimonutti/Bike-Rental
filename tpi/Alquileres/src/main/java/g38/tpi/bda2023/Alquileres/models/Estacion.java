@@ -1,5 +1,6 @@
 package g38.tpi.bda2023.Alquileres.models;
 
+import g38.tpi.bda2023.Alquileres.application.response.EstacionResponse;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -7,6 +8,8 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.LinkedHashMap;
 
 @Entity(name = Estacion.TABLE_NAME)
 @Getter
@@ -27,4 +30,17 @@ public class Estacion {
 
     private double latitud;
     private double longitud;
+
+    public static Estacion convertToEstacion(LinkedHashMap<String, Object> map) {
+        String timeFromDB = map.get("fechaHoraCreacion").toString().split("\\.")[0];
+        LocalDateTime fechaHoraCreacion = LocalDateTime.parse(timeFromDB, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
+
+        return new Estacion(
+                Long.valueOf(map.get("id").toString()),
+                (String) map.get("nombre"),
+                fechaHoraCreacion,
+                (Double) map.get("latitud"),
+                (Double) map.get("longitud")
+        );
+    }
 }

@@ -17,31 +17,23 @@ import java.net.http.HttpHeaders;
 @Service
 @RequiredArgsConstructor
 public class ExchangeServiceImpl implements ExchangeService {
-
-    @Override public double getMonto(String moneda_destino, Double importe){
+    @Override public double getMonto(String monedaDestino, Double importe){
 
         try {
             RestTemplate template = new RestTemplate();
 
-            // Creación de la entidad a enviar
-            HttpEntity<ExchangeRequest> entity = new HttpEntity<>(new ExchangeRequest(moneda_destino, importe));
+            HttpEntity<ExchangeRequest> entity = new HttpEntity<>(new ExchangeRequest(monedaDestino, importe));
 
-            // respuesta de la petición tendrá en su cuerpo a un objeto del tipo ExchangeResponse
-            //param: 1) La uri a invocar; 2) La entidad que se quiere enviar; 3) El tipo que se espera como respuesta.
             ResponseEntity<ExchangeResponse> res = template.postForEntity(
                     "http://34.82.105.125:8080/convertir", entity, ExchangeResponse.class
             );
 
-            // Se comprueba si el código de repuesta es de la familia 200
             if (res.getStatusCode().is2xxSuccessful()) {
-                //log.debug("Conversion completed successfully: {}", res.getBody());
-                return res.getBody().getImporte(); // return the "importe" value
+                return res.getBody().getImporte();
             } else {
-                //log.warn("Respuesta no exitosa: {}", res.getStatusCode());
                 return 0;
             }
         } catch (HttpClientErrorException ex) {
-            // La repuesta no es exitosa.
             return 0; //TODO: validar excepcion
         }
 

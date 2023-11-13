@@ -22,9 +22,7 @@ public class AlquilerServiceImpl implements AlquilerService{
     @Override public Alquiler start(long idCliente, Estacion estRetiro) {
         long id = alquilerRepository.getMaxId() + 1;
         LocalDateTime fechaHoraRetiro = LocalDateTime.now();
-        //LocalDateTime fechaHoraRetiro = LocalDateTime.of(2023, 10, 16, 4, 10);
-        Tarifa tarifa = null;
-        Alquiler alquiler = new Alquiler(id, idCliente, 1, estRetiro, null, fechaHoraRetiro, null, null,  tarifa);
+        Alquiler alquiler = new Alquiler(id, idCliente, 1, estRetiro, fechaHoraRetiro);
         return alquilerRepository.save(alquiler);
     }
 
@@ -32,9 +30,11 @@ public class AlquilerServiceImpl implements AlquilerService{
         Alquiler alquiler = alquilerRepository.findById(idAlquiler)
                 .orElseThrow(() -> new IllegalArgumentException("Alquiler not found"));
         if(alquiler.getEstado() == 2) { throw new IllegalArgumentException("Alquiler already finished"); }
+
         alquiler.setEstado(2);
         alquiler.setEstacionDevolucion(estDevolucion);
         alquiler.setFechaHoraDevolucion(LocalDateTime.now());
+
         Tarifa tarifa = chooseTarifa(alquiler);
         alquiler.setTarifa(tarifa);
         BigDecimal monto = calculateMonto(alquiler, tarifa);
@@ -46,39 +46,43 @@ public class AlquilerServiceImpl implements AlquilerService{
         int diaMes = alquiler.getFechaHoraRetiro().getDayOfMonth();
         int mes = alquiler.getFechaHoraRetiro().getMonthValue();
         int anio = alquiler.getFechaHoraRetiro().getYear();
-        Optional<Tarifa> tarifa = tarifaService.findTarifaFecha('C', diaMes, mes, anio);
+        Optional<Tarifa> tarifa = tarifaService.findTarifaFecha("C", diaMes, mes, anio);
 
         if(tarifa.isEmpty()) {
             int diaSemana = alquiler.getFechaHoraDevolucion().getDayOfWeek().getValue();
             tarifa = tarifaService.findTarifaDiaSemana(diaSemana);
         }
-        if(tarifa.isPresent()) { return tarifa.get(); }
-        else {
-            throw new IllegalArgumentException("Tarifa not found");
-        }
+
+        if(tarifa.isEmpty()) { throw new IllegalArgumentException("Tarifa not found"); }
+        return tarifa.get();
     }
 
     private BigDecimal calculateMonto(Alquiler alquiler, Tarifa tarifa) {
-        BigDecimal monto = new BigDecimal("0");
+        BigDecimal monto = BigDecimal.valueOf((0));
         monto = monto.add(tarifa.getMontoFijoAlquiler());
         Duration duration = Duration.between(alquiler.getFechaHoraRetiro(), alquiler.getFechaHoraDevolucion());
+        long horas;
         long minutes;
         try {
-            minutes = duration.toMinutes();
+            horas = duration.toHours();
+            minutes = duration.toMinutes() - horas*60;
         }
         catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("FechaHoraDevolucion is too far form FechaHoraRetiro");
         }
+
         if(minutes <= 31) {
-            monto = monto.add(tarifa.getMontoMinutoFraccion().multiply(new BigDecimal(minutes)));
+            monto = monto.add(tarifa.getMontoMinutoFraccion().multiply(BigDecimal.valueOf((minutes))));
         }
         else {
-            monto = monto.add(tarifa.getMontoHora().multiply(new BigDecimal(duration.toHours())));
+            horas++;
         }
+        monto = monto.add(tarifa.getMontoHora().multiply(BigDecimal.valueOf(horas)));
+
         double distanciaKm = distanciaService.calcularDistancia(alquiler.getEstacionDevolucion().getLatitud(),
                 alquiler.getEstacionDevolucion().getLongitud(), alquiler.getEstacionRetiro().getLatitud(),
                 alquiler.getEstacionRetiro().getLongitud()) / 1000;
-        monto = monto.add(tarifa.getMontoKm().multiply(new BigDecimal(distanciaKm)));
+        monto = monto.add(tarifa.getMontoKm().multiply(BigDecimal.valueOf((distanciaKm))));
         return monto;
     }
 }

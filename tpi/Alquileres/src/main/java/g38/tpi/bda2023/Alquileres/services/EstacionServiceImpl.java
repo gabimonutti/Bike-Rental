@@ -17,14 +17,12 @@ public class EstacionServiceImpl implements EstacionService {
             try {
                 RestTemplate template = new RestTemplate();
 
-
                 ResponseEntity<LinkedHashMap> res =
                         template.getForEntity("http://localhost:8084/api/estaciones/{id}",
                                 LinkedHashMap.class, id);
                 if(res.getStatusCode().is2xxSuccessful()) {
-                    LinkedHashMap<String, Object> map = res.getBody();
-                    LinkedHashMap<String, Object> data = (LinkedHashMap<String, Object>) map.get("data");
-                    Estacion estacion = convertToEstacion(data);
+                    LinkedHashMap<String, Object> estacionFromService = (LinkedHashMap<String, Object>) res.getBody().get("data");
+                    Estacion estacion = Estacion.convertToEstacion(estacionFromService);
                     return Optional.of(estacion);
                 }
                 else {
@@ -35,15 +33,4 @@ public class EstacionServiceImpl implements EstacionService {
                 return Optional.empty();
             }
         }
-
-    private Estacion convertToEstacion(LinkedHashMap<String, Object> map) {
-        Estacion estacion = new Estacion();
-        Long id = Long.valueOf(map.get("id").toString()); // convertir Integer a Long
-        estacion.setId(id);
-        estacion.setNombre((String) map.get("nombre"));
-        estacion.setFechaHoraCreacion((LocalDateTime) map.get("fechaHoraCreacion"));
-        estacion.setLatitud((Double) map.get("latitud"));
-        estacion.setLongitud((Double) map.get("longitud"));
-        return estacion;
-    }
 }
