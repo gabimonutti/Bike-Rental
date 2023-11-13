@@ -21,11 +21,11 @@ public class AlquilerResponse {
     private Long id;
     private Long idCliente;
     private int estado;
-    private Estacion estacionRetiro; //TODO: hacer que devuelva estacionResponse
-    private Estacion estacionDevolucion;
+    private EstacionResponse estacionRetiro; //TODO: hacer que devuelva estacionResponse
+    private EstacionResponse estacionDevolucion;
     private LocalDateTime fechaHoraRetiro;
     private LocalDateTime fechaHoraDevolucion;
-    private BigDecimal monto;
+    private String monto;
     private Tarifa tarifa;
 
     public static AlquilerResponse from (Alquiler alquiler) {
@@ -33,11 +33,12 @@ public class AlquilerResponse {
                 .id(alquiler.getId())
                 .idCliente(alquiler.getIdCliente())
                 .estado(alquiler.getEstado())
-                .estacionRetiro(alquiler.getEstacionRetiro())
-                .estacionDevolucion(alquiler.getEstacionDevolucion())
+                .estacionRetiro(EstacionResponse.from(alquiler.getEstacionRetiro()))
+                .estacionDevolucion(EstacionResponse.from(alquiler.getEstacionDevolucion()))
                 .fechaHoraRetiro(alquiler.getFechaHoraRetiro())
                 .fechaHoraDevolucion(alquiler.getFechaHoraDevolucion())
-                .monto(alquiler.getMonto())
+                // devolvemos el monto en string por precision de centavos y redondeamos a 2 digitos
+                .monto((alquiler.getMonto() == null)?null:String.format("%.02f", alquiler.getMonto().floatValue()))
                 .tarifa(alquiler.getTarifa())
                 .build();
     }
