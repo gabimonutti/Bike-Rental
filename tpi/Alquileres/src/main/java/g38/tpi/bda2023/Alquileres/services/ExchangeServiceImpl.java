@@ -42,7 +42,7 @@ public class ExchangeServiceImpl implements ExchangeService {
             }
         } catch (HttpClientErrorException ex) {
             // La repuesta no es exitosa.
-            return 0;
+            return 0; //TODO: validar excepcion
         }
 
     }
