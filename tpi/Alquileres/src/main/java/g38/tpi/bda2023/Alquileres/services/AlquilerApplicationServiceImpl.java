@@ -28,7 +28,7 @@ public class AlquilerApplicationServiceImpl implements AlquilerApplicationServic
         Estacion estDevolucion = estacionService.findById(idEstacionDevolucion)
                 .orElseThrow(() -> new IllegalArgumentException("Estacion Devolucion Not Found"));
 
-        if (!(exchangeService.ExchangesAvailable.contains(moneda))) throw new IllegalArgumentException("Exchange not allowed");
+        if (!(moneda == null || moneda.trim().isEmpty()) && !(exchangeService.ExchangesAvailable.contains(moneda))) throw new IllegalArgumentException("Exchange not allowed");
 
         Alquiler alquiler = alquilerService.end(idAlquiler, estDevolucion);
         AlquilerResponse alquilerResponse = AlquilerResponse.from(alquiler);
