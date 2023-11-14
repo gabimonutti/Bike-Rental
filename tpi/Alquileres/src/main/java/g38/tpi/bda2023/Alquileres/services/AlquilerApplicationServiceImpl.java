@@ -5,7 +5,11 @@ import g38.tpi.bda2023.Alquileres.application.response.InicioAlquilerResponse;
 import g38.tpi.bda2023.Alquileres.models.Alquiler;
 import g38.tpi.bda2023.Alquileres.models.Estacion;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -33,4 +37,41 @@ public class AlquilerApplicationServiceImpl implements AlquilerApplicationServic
         }
         return alquilerResponse;
     }
+    public List<AlquilerResponse> findAllAlquileres(){
+        List<AlquilerResponse> alquileresResponse = alquilerService.findAll()
+                .stream()
+                .map(AlquilerResponse::from)
+                .toList();
+
+        return alquileresResponse;
+    }
+
+    public List<AlquilerResponse> findByEstado(int estado){
+        List<AlquilerResponse> alquileresResponse = alquilerService.findAllByEstado(estado)
+                .stream()
+                .map(AlquilerResponse::from)
+                .toList();
+        return alquileresResponse;
+    }
+
+    public List<AlquilerResponse> findByMontoGtThan(BigDecimal monto){
+        List<AlquilerResponse> alquileresResponse = alquilerService.findAllByMontoGreaterThan(monto)
+                .stream()
+                .map(AlquilerResponse::from)
+                .toList();
+        return alquileresResponse;
+    }
+
+    public List<AlquilerResponse> findByEstadoAndMontoGtThan(int estado, BigDecimal monto){
+        List<AlquilerResponse> alquileresResponse = alquilerService.findAllByEstadoAndMontoGreaterThan(estado, monto)
+                .stream()
+                .map(AlquilerResponse::from)
+                .toList();
+        return alquileresResponse;
+    }
+
+
+
+
 }
+

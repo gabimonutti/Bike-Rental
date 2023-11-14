@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @RequestMapping("/api/alquileres")
 @RestController
@@ -23,7 +24,6 @@ import java.math.BigDecimal;
 @RequiredArgsConstructor
 public class AlquilerController {
     AlquilerApplicationService alquilerApplicationService;
-    AlquilerService alquilerService;
 
     @PostMapping
     public ResponseEntity<Object> create(@Valid @RequestBody CreateAlquilerRequest request) {
@@ -50,33 +50,52 @@ public class AlquilerController {
         }
     }
 
-//    @GetMapping
-//    public ResponseEntity<Object> getAll() {
-//        try {
-//            val estaciones = alquilerService.findAll()
-//                    .stream()
-//                    .map(AlquilerResponse::from)
-//                    .toList();
-//            return ResponseHandler.success(estaciones);
-//        } catch (IllegalArgumentException e) {
-//            return ResponseHandler.badRequest(e.getMessage());
-//        } catch (Exception e) {
-//            return ResponseHandler.internalError();
-//        }
-//    }
-@GetMapping
-public ResponseEntity<Object> getAll(@RequestParam BigDecimal monto, @RequestParam int estado) {
-    try {
-        val estaciones = alquilerService.findAll()
-                .stream()
-                .filter(alquiler -> alquiler.getMonto().compareTo(monto) >= 0 && alquiler.getEstado() == estado)
-                .map(AlquilerResponse::from)
-                .toList();
-        return ResponseHandler.success(estaciones);
-    } catch (IllegalArgumentException e) {
-        return ResponseHandler.badRequest(e.getMessage());
-    } catch (Exception e) {
-        return ResponseHandler.internalError();
+    @GetMapping("/all")
+    public ResponseEntity<Object> getAll(){
+        try{
+           List<AlquilerResponse> alquileres = alquilerApplicationService.findAllAlquileres();
+           return ResponseHandler.success(alquileres);
+        } catch (IllegalArgumentException e) {
+            return ResponseHandler.badRequest(e.getMessage());
+        } catch (Exception e) {
+            return ResponseHandler.internalError();
+        }
     }
-}
+
+    @GetMapping("/{estado}")
+    public ResponseEntity<Object> getAllByEstado(@PathVariable int estado){
+        try{
+            List<AlquilerResponse> alquileres = alquilerApplicationService.findByEstado(estado);
+            return ResponseHandler.success(alquileres);
+        } catch (IllegalArgumentException e) {
+            return ResponseHandler.badRequest(e.getMessage());
+        } catch (Exception e) {
+            return ResponseHandler.internalError();
+        }
+    }
+
+    @GetMapping("/monto/{monto}")
+    public ResponseEntity<Object> getAllByEstado(@PathVariable BigDecimal monto){
+        try{
+            List<AlquilerResponse> alquileres = alquilerApplicationService.findByMontoGtThan(monto);
+            return ResponseHandler.success(alquileres);
+        } catch (IllegalArgumentException e) {
+            return ResponseHandler.badRequest(e.getMessage());
+        } catch (Exception e) {
+            return ResponseHandler.internalError();
+        }
+    }
+
+    @GetMapping("/{estado}/{monto}")
+    public ResponseEntity<Object> getAllByEstadoAndMontoGtThan(@PathVariable int estado, @PathVariable BigDecimal monto){
+        try{
+            List<AlquilerResponse> alquileres = alquilerApplicationService.findByEstadoAndMontoGtThan(estado, monto);
+            return ResponseHandler.success(alquileres);
+        } catch (IllegalArgumentException e) {
+            return ResponseHandler.badRequest(e.getMessage());
+        } catch (Exception e) {
+            return ResponseHandler.internalError();
+        }
+    }
+
 }

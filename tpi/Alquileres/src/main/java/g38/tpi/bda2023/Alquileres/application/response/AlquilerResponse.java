@@ -12,6 +12,7 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -23,11 +24,11 @@ public class AlquilerResponse {
     private Long idCliente;
     private int estado;
     private EstacionResponse estacionRetiro;
-    private EstacionResponse estacionDevolucion;
+    private Optional<EstacionResponse> estacionDevolucion;
     private LocalDateTime fechaHoraRetiro;
     private LocalDateTime fechaHoraDevolucion;
     private String monto;
-    private Object tarifa;
+    private Optional<Object> tarifa;
 
     public static AlquilerResponse from (Alquiler alquiler) {
         return AlquilerResponse.builder()
@@ -35,14 +36,20 @@ public class AlquilerResponse {
                 .idCliente(alquiler.getIdCliente())
                 .estado(alquiler.getEstado())
                 .estacionRetiro(EstacionResponse.from(alquiler.getEstacionRetiro()))
-                .estacionDevolucion(EstacionResponse.from(alquiler.getEstacionDevolucion()))
+                //estacionDevolucion puede ser null
+                .estacionDevolucion(alquiler.getEstacionDevolucion() != null ?
+                        Optional.of(EstacionResponse.from(alquiler.getEstacionDevolucion())) :
+                        Optional.empty())
                 .fechaHoraRetiro(alquiler.getFechaHoraRetiro())
+                //fecha hora Devolucion puede ser null
                 .fechaHoraDevolucion(alquiler.getFechaHoraDevolucion())
                 // devolvemos el monto en string por precision de centavos y redondeamos a 2 digitos
                 .monto((alquiler.getMonto() == null)?null:String.format("%.02f", alquiler.getMonto().floatValue()))
-                .tarifa(Objects.equals(alquiler.getTarifa().getDefinicion(), "S") ?
-                        TarifaSResponse.from(alquiler.getTarifa()) :
-                        TarifaCResponse.from(alquiler.getTarifa()))
+                .tarifa(alquiler.getTarifa() != null ?
+                        Optional.of(Objects.equals(alquiler.getTarifa().getDefinicion(), "S") ?
+                                TarifaSResponse.from(alquiler.getTarifa()) :
+                                TarifaCResponse.from(alquiler.getTarifa())) :
+                        Optional.empty())
                 .build();
     }
 }
