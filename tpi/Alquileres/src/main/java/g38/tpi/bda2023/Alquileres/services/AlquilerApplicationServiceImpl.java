@@ -46,8 +46,8 @@ public class AlquilerApplicationServiceImpl implements AlquilerApplicationServic
         return alquileresResponse;
     }
 
-    public List<AlquilerResponse> findByEstado(int estado){
-        List<AlquilerResponse> alquileresResponse = alquilerService.findAllByEstado(estado)
+    public List<AlquilerResponse> findByIdCliente(int idCliente){
+        List<AlquilerResponse> alquileresResponse = alquilerService.findAllByIdCliente(idCliente)
                 .stream()
                 .map(AlquilerResponse::from)
                 .toList();
@@ -62,8 +62,8 @@ public class AlquilerApplicationServiceImpl implements AlquilerApplicationServic
         return alquileresResponse;
     }
 
-    public List<AlquilerResponse> findByEstadoAndMontoGtThan(int estado, BigDecimal monto){
-        List<AlquilerResponse> alquileresResponse = alquilerService.findAllByEstadoAndMontoGreaterThan(estado, monto)
+    public List<AlquilerResponse> getAllByIdClienteAndMontoGreaterThan(int idCliente, BigDecimal monto){
+        List<AlquilerResponse> alquileresResponse = alquilerService.getAllByIdClienteAndMontoGreaterThan(idCliente, monto)
                 .stream()
                 .map(AlquilerResponse::from)
                 .toList();

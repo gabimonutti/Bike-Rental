@@ -14,9 +14,9 @@ public interface AlquilerApplicationService {
 
     List<AlquilerResponse> findAllAlquileres();
 
-    List<AlquilerResponse> findByEstado(int estado);
+    List<AlquilerResponse> findByIdCliente(int idCliente);
 
     List<AlquilerResponse> findByMontoGtThan(BigDecimal monto);
 
-    List<AlquilerResponse> findByEstadoAndMontoGtThan(int estado, BigDecimal monto);
+    List<AlquilerResponse> getAllByIdClienteAndMontoGreaterThan(int idCliente, BigDecimal monto);
 }

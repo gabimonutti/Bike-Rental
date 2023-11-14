@@ -92,13 +92,13 @@ public class AlquilerServiceImpl implements AlquilerService{
     }
 
     @Override
-    public List<Alquiler> findAllByEstadoAndMontoGreaterThan(int estado, BigDecimal monto) {
-        return alquilerRepository.findAllByEstadoAndMontoGreaterThan(estado, monto);
+    public List<Alquiler> getAllByIdClienteAndMontoGreaterThan(int idCliente, BigDecimal monto) {
+        return alquilerRepository.getAllByIdClienteAndMontoGreaterThan(idCliente, monto);
     }
 
     @Override
-    public List<Alquiler> findAllByEstado(int estado) {
-        return alquilerRepository.findAllByEstado(estado);
+    public List<Alquiler> findAllByIdCliente(int idCliente) {
+        return alquilerRepository.findAllByIdCliente(idCliente);
     }
 
     @Override

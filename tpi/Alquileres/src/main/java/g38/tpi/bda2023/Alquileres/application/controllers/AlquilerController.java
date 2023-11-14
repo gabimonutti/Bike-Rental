@@ -50,7 +50,7 @@ public class AlquilerController {
         }
     }
 
-    @GetMapping("/all")
+    @GetMapping()
     public ResponseEntity<Object> getAll(){
         try{
            List<AlquilerResponse> alquileres = alquilerApplicationService.findAllAlquileres();
@@ -62,10 +62,10 @@ public class AlquilerController {
         }
     }
 
-    @GetMapping("/{estado}")
-    public ResponseEntity<Object> getAllByEstado(@PathVariable int estado){
+    @GetMapping(params = { "idCliente" })
+    public ResponseEntity<Object> getAllByEstado(@RequestParam int idCliente){
         try{
-            List<AlquilerResponse> alquileres = alquilerApplicationService.findByEstado(estado);
+            List<AlquilerResponse> alquileres = alquilerApplicationService.findByIdCliente(idCliente);
             return ResponseHandler.success(alquileres);
         } catch (IllegalArgumentException e) {
             return ResponseHandler.badRequest(e.getMessage());
@@ -74,8 +74,8 @@ public class AlquilerController {
         }
     }
 
-    @GetMapping("/monto/{monto}")
-    public ResponseEntity<Object> getAllByEstado(@PathVariable BigDecimal monto){
+    @GetMapping(params = { "monto" })
+    public ResponseEntity<Object> getAllByMonto(@RequestParam BigDecimal monto){
         try{
             List<AlquilerResponse> alquileres = alquilerApplicationService.findByMontoGtThan(monto);
             return ResponseHandler.success(alquileres);
@@ -86,10 +86,10 @@ public class AlquilerController {
         }
     }
 
-    @GetMapping("/{estado}/{monto}")
-    public ResponseEntity<Object> getAllByEstadoAndMontoGtThan(@PathVariable int estado, @PathVariable BigDecimal monto){
+    @GetMapping(params = { "idCliente", "monto" })
+    public ResponseEntity<Object> getAllByIdClienteAndMontoGtThan(@RequestParam int idCliente, @RequestParam BigDecimal monto){
         try{
-            List<AlquilerResponse> alquileres = alquilerApplicationService.findByEstadoAndMontoGtThan(estado, monto);
+            List<AlquilerResponse> alquileres = alquilerApplicationService.getAllByIdClienteAndMontoGreaterThan(idCliente, monto);
             return ResponseHandler.success(alquileres);
         } catch (IllegalArgumentException e) {
             return ResponseHandler.badRequest(e.getMessage());

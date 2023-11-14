@@ -13,8 +13,8 @@ public interface AlquilerRepository extends JpaRepository<Alquiler, Long> {
     @Query(value = "SELECT count(*) FROM ALQUILERES;", nativeQuery = true)
     Long getMaxId();
 
-    List<Alquiler> findAllByEstadoAndMontoGreaterThan(int estado, BigDecimal monto);
-    List<Alquiler> findAllByEstado(int estado);
+    List<Alquiler> getAllByIdClienteAndMontoGreaterThan(int idCliente, BigDecimal monto);
+    List<Alquiler> findAllByIdCliente(int idCliente);
     List<Alquiler> findAllByMontoGreaterThan(BigDecimal monto);
     List<Alquiler> findAll();
 }
