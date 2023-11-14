@@ -6,12 +6,17 @@ import g38.tpi.bda2023.Alquileres.application.requests.EndAlquilerRequest;
 import g38.tpi.bda2023.Alquileres.application.response.AlquilerResponse;
 import g38.tpi.bda2023.Alquileres.application.response.InicioAlquilerResponse;
 import g38.tpi.bda2023.Alquileres.services.AlquilerApplicationService;
+import g38.tpi.bda2023.Alquileres.services.AlquilerService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.val;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 @RequestMapping("/api/alquileres")
 @RestController
@@ -44,4 +49,53 @@ public class AlquilerController {
             return ResponseHandler.internalError();
         }
     }
+
+    @GetMapping()
+    public ResponseEntity<Object> getAll(){
+        try{
+           List<AlquilerResponse> alquileres = alquilerApplicationService.findAllAlquileres();
+           return ResponseHandler.success(alquileres);
+        } catch (IllegalArgumentException e) {
+            return ResponseHandler.badRequest(e.getMessage());
+        } catch (Exception e) {
+            return ResponseHandler.internalError();
+        }
+    }
+
+    @GetMapping(params = { "idCliente" })
+    public ResponseEntity<Object> getAllByEstado(@RequestParam int idCliente){
+        try{
+            List<AlquilerResponse> alquileres = alquilerApplicationService.findByIdCliente(idCliente);
+            return ResponseHandler.success(alquileres);
+        } catch (IllegalArgumentException e) {
+            return ResponseHandler.badRequest(e.getMessage());
+        } catch (Exception e) {
+            return ResponseHandler.internalError();
+        }
+    }
+
+    @GetMapping(params = { "monto" })
+    public ResponseEntity<Object> getAllByMonto(@RequestParam BigDecimal monto){
+        try{
+            List<AlquilerResponse> alquileres = alquilerApplicationService.findByMontoGtThan(monto);
+            return ResponseHandler.success(alquileres);
+        } catch (IllegalArgumentException e) {
+            return ResponseHandler.badRequest(e.getMessage());
+        } catch (Exception e) {
+            return ResponseHandler.internalError();
+        }
+    }
+
+    @GetMapping(params = { "idCliente", "monto" })
+    public ResponseEntity<Object> getAllByIdClienteAndMontoGtThan(@RequestParam int idCliente, @RequestParam BigDecimal monto){
+        try{
+            List<AlquilerResponse> alquileres = alquilerApplicationService.getAllByIdClienteAndMontoGreaterThan(idCliente, monto);
+            return ResponseHandler.success(alquileres);
+        } catch (IllegalArgumentException e) {
+            return ResponseHandler.badRequest(e.getMessage());
+        } catch (Exception e) {
+            return ResponseHandler.internalError();
+        }
+    }
+
 }

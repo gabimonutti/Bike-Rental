@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -84,5 +85,24 @@ public class AlquilerServiceImpl implements AlquilerService{
                 alquiler.getEstacionRetiro().getLongitud()) / 1000;
         monto = monto.add(tarifa.getMontoKm().multiply(BigDecimal.valueOf((distanciaKm))));
         return monto;
+    }
+    @Override
+    public List<Alquiler> findAll() {
+        return alquilerRepository.findAll();
+    }
+
+    @Override
+    public List<Alquiler> getAllByIdClienteAndMontoGreaterThan(int idCliente, BigDecimal monto) {
+        return alquilerRepository.getAllByIdClienteAndMontoGreaterThan(idCliente, monto);
+    }
+
+    @Override
+    public List<Alquiler> findAllByIdCliente(int idCliente) {
+        return alquilerRepository.findAllByIdCliente(idCliente);
+    }
+
+    @Override
+    public List<Alquiler> findAllByMontoGreaterThan(BigDecimal monto) {
+        return alquilerRepository.findAllByMontoGreaterThan(monto);
     }
 }
