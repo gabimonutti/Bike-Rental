@@ -11,16 +11,16 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Builder
 public class TarifaCResponse {
-    Long id;
-    Integer tipoTarifa;
-    String definicion;
-    Integer diaMes;
-    Integer mes;
-    Integer anio;
-    BigDecimal montoFijoAlquiler;
-    BigDecimal montoMinutoFraccion;
-    BigDecimal montoHora;
-    BigDecimal montoKm;
+    private Long id;
+    private Integer tipoTarifa;
+    private String definicion;
+    private Integer diaMes;
+    private Integer mes;
+    private Integer anio;
+    private BigDecimal montoFijoAlquiler;
+    private BigDecimal montoMinutoFraccion;
+    private BigDecimal montoHora;
+    private BigDecimal montoKm;
 
     public static TarifaCResponse from(Tarifa tarifa) {
         return TarifaCResponse.builder()

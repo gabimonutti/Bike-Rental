@@ -18,18 +18,18 @@ import java.util.LinkedHashMap;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Estacion {
-    public static final String TABLE_NAME = "ESTACIONES";
+    static final String TABLE_NAME = "ESTACIONES";
 
     @Id
-    private Long id;
+    Long id;
 
-    private String nombre;
+    String nombre;
 
     @Column(name = "FECHA_HORA_CREACION")
-    private LocalDateTime fechaHoraCreacion;
+    LocalDateTime fechaHoraCreacion;
 
-    private double latitud;
-    private double longitud;
+    double latitud;
+    double longitud;
 
     public static Estacion convertToEstacion(LinkedHashMap<String, Object> map) {
         String timeFromDB = map.get("fechaHoraCreacion").toString().split("\\.")[0];

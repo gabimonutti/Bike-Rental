@@ -15,32 +15,32 @@ import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Alquiler {
     @Id
-    private Long id;
+    Long id;
 
     @Column(name = "ID_CLIENTE")
-    private Long idCliente;
+    Long idCliente;
 
-    private int estado;
+    int estado;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "ESTACION_RETIRO")
-    private Estacion estacionRetiro;
+    Estacion estacionRetiro;
 
     @ManyToOne
     @JoinColumn(name = "ESTACION_DEVOLUCION", nullable = true)
-    private Estacion estacionDevolucion;
+    Estacion estacionDevolucion;
 
     @Column(name = "FECHA_HORA_RETIRO", nullable = true)
-    private LocalDateTime fechaHoraRetiro;
+    LocalDateTime fechaHoraRetiro;
 
     @Column(name = "FECHA_HORA_DEVOLUCION", nullable = true)
-    private LocalDateTime fechaHoraDevolucion;
+    LocalDateTime fechaHoraDevolucion;
 
-    private BigDecimal monto;
+    BigDecimal monto;
 
     @ManyToOne
     @JoinColumn(name = "ID_TARIFA", nullable = true)
-    private Tarifa tarifa;
+    Tarifa tarifa;
 
     public Alquiler(Long id, Long idCliente, int estado, Estacion estacionRetiro, LocalDateTime fechaHoraRetiro) {
         this.id = id;

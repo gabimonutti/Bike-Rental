@@ -20,7 +20,7 @@ public class Estacion {
     Long id;
     String nombre;
     @Column(name = "FECHA_HORA_CREACION")
-    private LocalDateTime fechaHoraCreacion;
+    LocalDateTime fechaHoraCreacion;
     double latitud;
     double longitud;
 

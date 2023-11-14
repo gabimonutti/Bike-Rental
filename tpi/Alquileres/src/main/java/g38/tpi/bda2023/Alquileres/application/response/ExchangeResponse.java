@@ -3,11 +3,11 @@ package g38.tpi.bda2023.Alquileres.application.response;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-@Data
-@Builder
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@Builder
 public class ExchangeResponse {
     String moneda;
     Double importe;
