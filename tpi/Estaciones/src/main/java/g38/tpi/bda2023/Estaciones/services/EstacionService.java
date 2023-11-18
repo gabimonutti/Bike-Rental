@@ -9,6 +9,8 @@ import java.util.Optional;
 public interface EstacionService {
     List<Estacion> findAll();
 
+    Estacion findEstacionMasCercana(double latitud, double longitud);
+
     Optional<Estacion> findById(Long id);
 
     Estacion create (String nombre, double latitud, double longitud);
