@@ -6,12 +6,12 @@ import g38.tpi.bda2023.Alquileres.application.requests.EndAlquilerRequest;
 import g38.tpi.bda2023.Alquileres.application.response.AlquilerResponse;
 import g38.tpi.bda2023.Alquileres.application.response.InicioAlquilerResponse;
 import g38.tpi.bda2023.Alquileres.services.AlquilerApplicationService;
-import g38.tpi.bda2023.Alquileres.services.AlquilerService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import lombok.val;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -63,7 +63,7 @@ public class AlquilerController {
     }
 
     @GetMapping(params = { "idCliente" })
-    public ResponseEntity<Object> getAllByEstado(@RequestParam int idCliente){
+    public ResponseEntity<Object> getAllByEstado(@Valid @Positive @RequestParam int idCliente){
         try{
             List<AlquilerResponse> alquileres = alquilerApplicationService.findByIdCliente(idCliente);
             return ResponseHandler.success(alquileres);
@@ -75,7 +75,7 @@ public class AlquilerController {
     }
 
     @GetMapping(params = { "monto" })
-    public ResponseEntity<Object> getAllByMonto(@RequestParam BigDecimal monto){
+    public ResponseEntity<Object> getAllByMonto(@RequestParam @Valid @PositiveOrZero BigDecimal monto){
         try{
             List<AlquilerResponse> alquileres = alquilerApplicationService.findByMontoGtThan(monto);
             return ResponseHandler.success(alquileres);
@@ -87,7 +87,8 @@ public class AlquilerController {
     }
 
     @GetMapping(params = { "idCliente", "monto" })
-    public ResponseEntity<Object> getAllByIdClienteAndMontoGtThan(@RequestParam int idCliente, @RequestParam BigDecimal monto){
+    public ResponseEntity<Object> getAllByIdClienteAndMontoGtThan(@Valid @Positive @RequestParam int idCliente,
+                                                                  @Valid @PositiveOrZero @RequestParam BigDecimal monto){
         try{
             List<AlquilerResponse> alquileres = alquilerApplicationService.getAllByIdClienteAndMontoGreaterThan(idCliente, monto);
             return ResponseHandler.success(alquileres);
