@@ -37,10 +37,10 @@ public class AlquilerController {
         }
     }
 
-    @PatchMapping("/finalizar")
-    public ResponseEntity<Object> end(@Valid @RequestBody EndAlquilerRequest request) {
+    @PatchMapping("/finalizar/{idAlquiler}")
+    public ResponseEntity<Object> end(@PathVariable Long idAlquiler, @Valid @RequestBody EndAlquilerRequest request) {
         try {
-            AlquilerResponse updatedAlquiler = alquilerApplicationService.end(request.getIdAlquiler(),
+            AlquilerResponse updatedAlquiler = alquilerApplicationService.end(idAlquiler,
                     request.getIdEstacionDevolucion(), request.getMoneda());
             return ResponseHandler.success(updatedAlquiler);
         } catch (IllegalArgumentException e) {
