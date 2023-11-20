@@ -34,10 +34,10 @@ public class AlquilerApplicationServiceImpl implements AlquilerApplicationServic
 
         // Como el alquiler que traemos de la db no tiene el objeto estacion retiro (solo su id), buscamos el objeto
         // para poder mostrarlo en el response
-        alquiler.setEstacionRetiro(estacionService.findById(alquiler.getIdEstacionRet())
-                .orElseThrow(() -> new IllegalArgumentException("Estacion Retiro Not Found")));
+        Estacion estRetiro = estacionService.findById(alquiler.getIdEstacionRet())
+                .orElseThrow(() -> new IllegalArgumentException("Estacion Retiro Not Found"));
 
-        alquilerService.end(alquiler, estDevolucion);
+        alquilerService.end(alquiler, estRetiro, estDevolucion);
 
         AlquilerResponse alquilerResponse = AlquilerResponse.from(alquiler);
 

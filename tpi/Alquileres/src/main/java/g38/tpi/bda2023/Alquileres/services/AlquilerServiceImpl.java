@@ -27,14 +27,10 @@ public class AlquilerServiceImpl implements AlquilerService{
         return alquiler;
     }
 
-    @Override public Alquiler end(Alquiler alquiler, Estacion estDevolucion) {
-        if(alquiler.getEstado() == 2) { throw new IllegalArgumentException("Alquiler already finished"); }
+    @Override public Alquiler end(Alquiler alquiler, Estacion estRetiro, Estacion estDevolucion) {
+        if(alquiler.isFinished()) { throw new IllegalArgumentException("Alquiler already finished"); }
 
-        alquiler.setEstado(2);
-        alquiler.setEstacionDevolucion(estDevolucion);
-        alquiler.setIdEstacionDev(estDevolucion.getId());
-        alquiler.setFechaHoraDevolucion(LocalDateTime.now());
-
+        alquiler.end(estRetiro, estDevolucion);
         Tarifa tarifa = chooseTarifa(alquiler);
         alquiler.setTarifa(tarifa);
         BigDecimal monto = calculateMonto(alquiler, tarifa);
@@ -69,7 +65,7 @@ public class AlquilerServiceImpl implements AlquilerService{
             minutes = duration.toMinutes() - horas*60;
         }
         catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("FechaHoraDevolucion is too far form FechaHoraRetiro");
+            throw new IllegalArgumentException("FechaHoraDevolucion is too far from FechaHoraRetiro");
         }
 
         if(minutes <= 31) {

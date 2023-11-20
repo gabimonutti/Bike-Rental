@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface AlquilerService {
     Alquiler start(long idCliente, Estacion EstRetiro);
-    Alquiler end(Alquiler alquiler, Estacion estDevolucion);
+    Alquiler end(Alquiler alquiler, Estacion estRetiro, Estacion estDevolucion);
     Optional<Alquiler> findById(long id);
     List<Alquiler> findAll();
     List<Alquiler> findAllByMontoGreaterThan(BigDecimal monto);

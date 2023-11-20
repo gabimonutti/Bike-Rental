@@ -54,4 +54,14 @@ public class Alquiler {
         this.idEstacionRet = estacionRetiro.getId();
         this.fechaHoraRetiro = LocalDateTime.now();;
     }
+
+    public boolean isFinished() { return estado == 2; }
+
+    public void end(Estacion estacionRet, Estacion estacionDev) {
+        this.estacionRetiro = estacionRet;
+        this.estacionDevolucion = estacionDev;
+        this.idEstacionDev = estacionDev.getId();
+        this.estado = 2;
+        this.fechaHoraDevolucion = LocalDateTime.now();
+    }
 }
