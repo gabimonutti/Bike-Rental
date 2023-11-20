@@ -57,9 +57,9 @@ public class AlquilerController {
            return ResponseHandler.success(alquileres);
         } catch (IllegalArgumentException e) {
             return ResponseHandler.badRequest(e.getMessage());
-        } catch (Exception e) {
+        } /*catch (Exception e) {
             return ResponseHandler.internalError();
-        }
+        }*/
     }
 
     @GetMapping(params = { "idCliente" })

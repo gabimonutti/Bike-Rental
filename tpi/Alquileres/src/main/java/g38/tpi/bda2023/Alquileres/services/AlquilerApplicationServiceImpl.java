@@ -29,7 +29,16 @@ public class AlquilerApplicationServiceImpl implements AlquilerApplicationServic
 
         if (!(moneda == null || moneda.trim().isEmpty()) && !Currency.isValid(moneda)) throw new IllegalArgumentException("Exchange not allowed");
 
-        Alquiler alquiler = alquilerService.end(idAlquiler, estDevolucion);
+        Alquiler alquiler = alquilerService.findById(idAlquiler)
+                .orElseThrow(() -> new IllegalArgumentException("Alquiler not found"));
+
+        // Como el alquiler que traemos de la db no tiene el objeto estacion retiro (solo su id), buscamos el objeto
+        // para poder mostrarlo en el response
+        alquiler.setEstacionRetiro(estacionService.findById(alquiler.getIdEstacionRet())
+                .orElseThrow(() -> new IllegalArgumentException("Estacion Retiro Not Found")));
+
+        alquilerService.end(alquiler, estDevolucion);
+
         AlquilerResponse alquilerResponse = AlquilerResponse.from(alquiler);
 
         if (Currency.isValid(moneda)) {
@@ -42,6 +51,7 @@ public class AlquilerApplicationServiceImpl implements AlquilerApplicationServic
 
         return alquilerService.findAll()
                 .stream()
+                .peek(this::getEstaciones)
                 .map(AlquilerResponse::from)
                 .toList();
     }
@@ -49,6 +59,7 @@ public class AlquilerApplicationServiceImpl implements AlquilerApplicationServic
     public List<AlquilerResponse> findByIdCliente(int idCliente){
         return alquilerService.findAllByIdCliente(idCliente)
                 .stream()
+                .peek(this::getEstaciones)
                 .map(AlquilerResponse::from)
                 .toList();
     }
@@ -56,6 +67,7 @@ public class AlquilerApplicationServiceImpl implements AlquilerApplicationServic
     public List<AlquilerResponse> findByMontoGtThan(BigDecimal monto){
         return alquilerService.findAllByMontoGreaterThan(monto)
                 .stream()
+                .peek(this::getEstaciones)
                 .map(AlquilerResponse::from)
                 .toList();
     }
@@ -63,8 +75,20 @@ public class AlquilerApplicationServiceImpl implements AlquilerApplicationServic
     public List<AlquilerResponse> getAllByIdClienteAndMontoGreaterThan(int idCliente, BigDecimal monto){
         return alquilerService.getAllByIdClienteAndMontoGreaterThan(idCliente, monto)
                 .stream()
+                .peek(this::getEstaciones)
                 .map(AlquilerResponse::from)
                 .toList();
+    }
+
+    private void getEstaciones(Alquiler alquiler) {
+        if (alquiler.getIdEstacionRet() != null) {
+            alquiler.setEstacionRetiro(estacionService.findById(alquiler.getIdEstacionRet())
+                    .orElseThrow(() -> new IllegalArgumentException("Estacion Retiro Not Found")));
+        }
+        if (alquiler.getIdEstacionDev() != null) {
+            alquiler.setEstacionDevolucion(estacionService.findById(alquiler.getIdEstacionDev())
+                    .orElseThrow(() -> new IllegalArgumentException("Estacion Devolucion Not Found")));
+        }
     }
 
 
