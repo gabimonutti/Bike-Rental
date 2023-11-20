@@ -22,12 +22,16 @@ public class Alquiler {
 
     int estado;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "ESTACION_RETIRO")
+    @Column(name = "ESTACION_RETIRO")
+    Long idEstacionRet;
+
+    @Column(name = "ESTACION_DEVOLUCION")
+    Long idEstacionDev;
+
+    @Transient
     Estacion estacionRetiro;
 
-    @ManyToOne
-    @JoinColumn(name = "ESTACION_DEVOLUCION", nullable = true)
+    @Transient
     Estacion estacionDevolucion;
 
     @Column(name = "FECHA_HORA_RETIRO", nullable = true)
@@ -42,11 +46,22 @@ public class Alquiler {
     @JoinColumn(name = "ID_TARIFA", nullable = true)
     Tarifa tarifa;
 
-    public Alquiler(Long id, Long idCliente, int estado, Estacion estacionRetiro, LocalDateTime fechaHoraRetiro) {
+    public Alquiler(Long id, Long idCliente, Estacion estacionRetiro) {
         this.id = id;
         this.idCliente = idCliente;
-        this.estado = estado;
+        this.estado = 1;
         this.estacionRetiro = estacionRetiro;
-        this.fechaHoraRetiro = fechaHoraRetiro;
+        this.idEstacionRet = estacionRetiro.getId();
+        this.fechaHoraRetiro = LocalDateTime.now();;
+    }
+
+    public boolean isFinished() { return estado == 2; }
+
+    public void end(Estacion estacionRet, Estacion estacionDev) {
+        this.estacionRetiro = estacionRet;
+        this.estacionDevolucion = estacionDev;
+        this.idEstacionDev = estacionDev.getId();
+        this.estado = 2;
+        this.fechaHoraDevolucion = LocalDateTime.now();
     }
 }

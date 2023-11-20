@@ -6,6 +6,9 @@ import g38.tpi.bda2023.Estaciones.application.response.EstacionResponse;
 import g38.tpi.bda2023.Estaciones.models.Estacion;
 import g38.tpi.bda2023.Estaciones.services.DistanciaService;
 import g38.tpi.bda2023.Estaciones.services.EstacionService;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -54,18 +57,12 @@ public class EstacionController {
     }
 
     @GetMapping("/estacion-mas-cercana")
-    public ResponseEntity<Object> findEstacionMasCercana(@RequestParam("latitud") double latitud, @RequestParam("longitud") double longitud) {
+    public ResponseEntity<Object> findEstacionMasCercana(@Valid @RequestParam("latitud") double latitud, @Valid @RequestParam("longitud") double longitud) {
         try {
-            val estaciones = estacionService.findAll()
-                    .stream()
-                    .map(EstacionResponse::from)
-                    .toList();
-
-            EstacionResponse estacionCercana = estaciones.stream()
-                    .min(Comparator.comparingDouble(estacion -> distanciaService.calcularDistancia(latitud, longitud, estacion.getLatitud(), estacion.getLongitud())))
-                    .orElse(null);
-
-            return ResponseHandler.success(estacionCercana);
+            Estacion estacionCercana = estacionService.findEstacionMasCercana(latitud, longitud);
+            return ResponseHandler.success(EstacionResponse.from(estacionCercana));
+        } catch (IllegalStateException e) {
+            return ResponseHandler.badRequest(e.getMessage());
         } catch (IllegalArgumentException e) {
             return ResponseHandler.notFound();
         } catch (Exception e) {
@@ -74,14 +71,15 @@ public class EstacionController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> create(@RequestBody CreateEstacionRequest estacionRequest) {
+    public ResponseEntity<Object> create(@Valid @RequestBody CreateEstacionRequest estacionRequest) {
         try {
             val estacion = estacionService.create(
                     estacionRequest.getNombre(),
                     estacionRequest.getLatitud(),
                     estacionRequest.getLongitud());
             return ResponseHandler.success(EstacionResponse.from(estacion));
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | ConstraintViolationException e) {
+            // por algun motivo las validaciones hechas con annotations no le lee el mensaje
             return ResponseHandler.badRequest(e.getMessage());
         } catch (Exception e) {
             return ResponseHandler.internalError();

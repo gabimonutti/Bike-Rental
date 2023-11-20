@@ -22,25 +22,21 @@ public class AlquilerServiceImpl implements AlquilerService{
 
     @Override public Alquiler start(long idCliente, Estacion estRetiro) {
         long id = alquilerRepository.getMaxId() + 1;
-        LocalDateTime fechaHoraRetiro = LocalDateTime.now();
-        Alquiler alquiler = new Alquiler(id, idCliente, 1, estRetiro, fechaHoraRetiro);
-        return alquilerRepository.save(alquiler);
+        Alquiler alquiler = new Alquiler(id, idCliente, estRetiro);
+        alquilerRepository.save(alquiler);
+        return alquiler;
     }
 
-    @Override public Alquiler end(long idAlquiler, Estacion estDevolucion) {
-        Alquiler alquiler = alquilerRepository.findById(idAlquiler)
-                .orElseThrow(() -> new IllegalArgumentException("Alquiler not found"));
-        if(alquiler.getEstado() == 2) { throw new IllegalArgumentException("Alquiler already finished"); }
+    @Override public Alquiler end(Alquiler alquiler, Estacion estRetiro, Estacion estDevolucion) {
+        if(alquiler.isFinished()) { throw new IllegalArgumentException("Alquiler already finished"); }
 
-        alquiler.setEstado(2);
-        alquiler.setEstacionDevolucion(estDevolucion);
-        alquiler.setFechaHoraDevolucion(LocalDateTime.now());
-
+        alquiler.end(estRetiro, estDevolucion);
         Tarifa tarifa = chooseTarifa(alquiler);
         alquiler.setTarifa(tarifa);
         BigDecimal monto = calculateMonto(alquiler, tarifa);
         alquiler.setMonto(monto);
-        return alquilerRepository.save(alquiler);
+        alquilerRepository.save(alquiler);
+        return alquiler;
     }
 
     private Tarifa chooseTarifa(Alquiler alquiler) {
@@ -69,7 +65,7 @@ public class AlquilerServiceImpl implements AlquilerService{
             minutes = duration.toMinutes() - horas*60;
         }
         catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("FechaHoraDevolucion is too far form FechaHoraRetiro");
+            throw new IllegalArgumentException("FechaHoraDevolucion is too far from FechaHoraRetiro");
         }
 
         if(minutes <= 31) {
@@ -86,6 +82,10 @@ public class AlquilerServiceImpl implements AlquilerService{
         monto = monto.add(tarifa.getMontoKm().multiply(BigDecimal.valueOf((distanciaKm))));
         return monto;
     }
+
+    @Override
+    public Optional<Alquiler> findById(long id) { return alquilerRepository.findById(id); }
+
     @Override
     public List<Alquiler> findAll() {
         return alquilerRepository.findAll();

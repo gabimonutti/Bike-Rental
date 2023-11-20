@@ -9,7 +9,9 @@ import lombok.experimental.FieldDefaults;
 import lombok.val;
 import org.springframework.stereotype.Service;
 
+import java.lang.instrument.IllegalClassFormatException;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,10 +21,29 @@ import java.util.Optional;
 public class EstacionServiceImpl implements EstacionService{
     EstacionRespository estacionRespository;
     IdentifierRepository identifierRepository;
+    DistanciaService distanciaService;
 
     @Override
     public List<Estacion> findAll() {
         return estacionRespository.findAll();
+    }
+
+    @Override
+    public Estacion findEstacionMasCercana(double latitud, double longitud) {
+        // Max distance which someone can make this query (in kilometers)
+        double maxDistanceKm = 50;
+
+        if(latitud > 90 | latitud < -90) { throw new IllegalStateException("Invalid latitud value"); }
+        if(longitud > 90 | longitud < -90) { throw new IllegalStateException("Invalid longitud value"); }
+
+        List<Estacion> estaciones = findAll();
+        Estacion resultado = estaciones.stream()
+                .min(Comparator.comparingDouble(estacion -> distanciaService.calcularDistancia(latitud, longitud, estacion.getLatitud(), estacion.getLongitud())))
+                .orElse(null);
+        if(distanciaService.calcularDistancia(latitud, longitud, resultado.getLatitud(), resultado.getLongitud())/1000 > maxDistanceKm) {
+            throw new IllegalStateException("Location is too far from stations");
+        }
+        return resultado;
     }
 
     @Override

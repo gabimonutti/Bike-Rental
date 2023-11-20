@@ -9,8 +9,6 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EndAlquilerRequest {
     @NotNull
-    long idAlquiler;
-    @NotNull
     long idEstacionDevolucion;
     String moneda;
 }

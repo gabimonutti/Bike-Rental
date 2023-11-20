@@ -5,7 +5,6 @@ import g38.tpi.bda2023.Alquileres.application.response.InicioAlquilerResponse;
 import g38.tpi.bda2023.Alquileres.models.Alquiler;
 import g38.tpi.bda2023.Alquileres.models.Estacion;
 import lombok.RequiredArgsConstructor;
-import lombok.val;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -28,48 +27,68 @@ public class AlquilerApplicationServiceImpl implements AlquilerApplicationServic
         Estacion estDevolucion = estacionService.findById(idEstacionDevolucion)
                 .orElseThrow(() -> new IllegalArgumentException("Estacion Devolucion Not Found"));
 
-        if (!(moneda == null || moneda.trim().isEmpty()) && !(exchangeService.ExchangesAvailable.contains(moneda))) throw new IllegalArgumentException("Exchange not allowed");
+        if (!(moneda == null || moneda.trim().isEmpty()) && !Currency.isValid(moneda)) throw new IllegalArgumentException("Exchange not allowed");
 
-        Alquiler alquiler = alquilerService.end(idAlquiler, estDevolucion);
+        Alquiler alquiler = alquilerService.findById(idAlquiler)
+                .orElseThrow(() -> new IllegalArgumentException("Alquiler not found"));
+
+        // Como el alquiler que traemos de la db no tiene el objeto estacion retiro (solo su id), buscamos el objeto
+        // para poder mostrarlo en el response
+        Estacion estRetiro = estacionService.findById(alquiler.getIdEstacionRet())
+                .orElseThrow(() -> new IllegalArgumentException("Estacion Retiro Not Found"));
+
+        alquilerService.end(alquiler, estRetiro, estDevolucion);
+
         AlquilerResponse alquilerResponse = AlquilerResponse.from(alquiler);
 
-        if (exchangeService.ExchangesAvailable.contains(moneda)) {
+        if (Currency.isValid(moneda)) {
             double montoExchanged = exchangeService.getMonto(moneda, alquiler.getMonto().doubleValue());
             alquilerResponse.setMonto(String.format("%.02f", montoExchanged));
         }
         return alquilerResponse;
     }
     public List<AlquilerResponse> findAllAlquileres(){
-        List<AlquilerResponse> alquileresResponse = alquilerService.findAll()
+
+        return alquilerService.findAll()
                 .stream()
+                .peek(this::getEstaciones)
                 .map(AlquilerResponse::from)
                 .toList();
-
-        return alquileresResponse;
     }
 
     public List<AlquilerResponse> findByIdCliente(int idCliente){
-        List<AlquilerResponse> alquileresResponse = alquilerService.findAllByIdCliente(idCliente)
+        return alquilerService.findAllByIdCliente(idCliente)
                 .stream()
+                .peek(this::getEstaciones)
                 .map(AlquilerResponse::from)
                 .toList();
-        return alquileresResponse;
     }
 
     public List<AlquilerResponse> findByMontoGtThan(BigDecimal monto){
-        List<AlquilerResponse> alquileresResponse = alquilerService.findAllByMontoGreaterThan(monto)
+        return alquilerService.findAllByMontoGreaterThan(monto)
                 .stream()
+                .peek(this::getEstaciones)
                 .map(AlquilerResponse::from)
                 .toList();
-        return alquileresResponse;
     }
 
     public List<AlquilerResponse> getAllByIdClienteAndMontoGreaterThan(int idCliente, BigDecimal monto){
-        List<AlquilerResponse> alquileresResponse = alquilerService.getAllByIdClienteAndMontoGreaterThan(idCliente, monto)
+        return alquilerService.getAllByIdClienteAndMontoGreaterThan(idCliente, monto)
                 .stream()
+                .peek(this::getEstaciones)
                 .map(AlquilerResponse::from)
                 .toList();
-        return alquileresResponse;
+    }
+
+    private void getEstaciones(Alquiler alquiler) {
+        if (alquiler.getIdEstacionRet() != null) {
+            alquiler.setEstacionRetiro(estacionService.findById(alquiler.getIdEstacionRet())
+                    .orElseThrow(() -> new IllegalArgumentException("Estacion Retiro Not Found")));
+        }
+        if (alquiler.getIdEstacionDev() != null) {
+            alquiler.setEstacionDevolucion(estacionService.findById(alquiler.getIdEstacionDev())
+                    .orElseThrow(() -> new IllegalArgumentException("Estacion Devolucion Not Found")));
+        }
     }
 
 
