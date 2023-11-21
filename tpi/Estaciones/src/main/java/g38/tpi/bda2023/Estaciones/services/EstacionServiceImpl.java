@@ -53,6 +53,7 @@ public class EstacionServiceImpl implements EstacionService{
 
     @Override
     public Estacion create(String nombre, double latitud, double longitud) {
+        if(nombre.isEmpty()) { throw new IllegalStateException("Station name cant be an empty string"); }
         if(latitud > 90 | latitud < -90) { throw new IllegalStateException("Invalid latitud value"); }
         if(longitud > 180 | longitud < -180) { throw new IllegalStateException("Invalid longitud value"); }
 

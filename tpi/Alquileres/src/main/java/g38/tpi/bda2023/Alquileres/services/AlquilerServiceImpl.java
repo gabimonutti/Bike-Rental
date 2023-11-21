@@ -105,16 +105,20 @@ public class AlquilerServiceImpl implements AlquilerService{
 
     @Override
     public List<Alquiler> getAllByIdClienteAndMontoGreaterThan(int idCliente, BigDecimal monto) {
+        if(idCliente < 1) { throw new IllegalArgumentException("IdCliente should be positive"); }
+        if(monto.doubleValue() < 0) { throw new IllegalArgumentException("Monto should be positive or zero"); }
         return alquilerRepository.getAllByIdClienteAndMontoGreaterThan(idCliente, monto);
     }
 
     @Override
     public List<Alquiler> findAllByIdCliente(int idCliente) {
+        if(idCliente < 1) { throw new IllegalArgumentException("IdCliente should be positive"); }
         return alquilerRepository.findAllByIdCliente(idCliente);
     }
 
     @Override
     public List<Alquiler> findAllByMontoGreaterThan(BigDecimal monto) {
+        if(monto.doubleValue() < 0) { throw new IllegalArgumentException("Monto should be positive or zero"); }
         return alquilerRepository.findAllByMontoGreaterThan(monto);
     }
 }
