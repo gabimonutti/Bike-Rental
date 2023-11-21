@@ -37,7 +37,10 @@ public class AlquilerServiceImpl implements AlquilerService{
         alquiler.end(idEstDevolucion);
         Tarifa tarifa = chooseTarifa(alquiler);
         alquiler.setTarifa(tarifa);
-        BigDecimal monto = calculateMonto(alquiler, tarifa);
+
+        double distanciaKm = calcularDistancia(alquiler);
+
+        BigDecimal monto = alquiler.calculateMonto(alquiler, tarifa, distanciaKm);
         alquiler.setMonto(monto);
         alquilerRepository.save(alquiler);
         return alquiler;
@@ -58,41 +61,16 @@ public class AlquilerServiceImpl implements AlquilerService{
         return tarifa.get();
     }
 
-    public BigDecimal calculateMonto(Alquiler alquiler, Tarifa tarifa) {
-        BigDecimal monto = BigDecimal.valueOf((0));
-        monto = monto.add(tarifa.getMontoFijoAlquiler());
-        Duration duration = Duration.between(alquiler.getFechaHoraRetiro(), alquiler.getFechaHoraDevolucion());
-        long horas;
-        long minutes;
-        try {
-            horas = duration.toHours();
-            minutes = duration.toMinutes() - horas*60;
-        }
-        catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("FechaHoraDevolucion is too far from FechaHoraRetiro");
-        }
-
-        if(minutes <= 31) {
-            monto = monto.add(tarifa.getMontoMinutoFraccion().multiply(BigDecimal.valueOf((minutes))));
-        }
-        else {
-            horas++;
-        }
-        monto = monto.add(tarifa.getMontoHora().multiply(BigDecimal.valueOf(horas)));
-
-//        EstacionService estacionService1 = new EstacionServiceImpl();
+    private double calcularDistancia(Alquiler alquiler) {
         Estacion estacionRetiro = estacionService.findById(alquiler.getIdEstacionRet())
                 .orElseThrow(() -> new IllegalArgumentException("Estacion Retiro Not Found"));
         Estacion estacionDevolucion = estacionService.findById(alquiler.getIdEstacionDev())
                 .orElseThrow(() -> new IllegalArgumentException("Estacion Devolucion Not Found"));
 
-//        DistanciaService distanciaService1 = new DistanciaService();
         double distanciaKm = distanciaService.calcularDistancia(estacionRetiro.getLatitud(),
                 estacionRetiro.getLongitud(), estacionDevolucion.getLatitud(),
                 estacionDevolucion.getLongitud()) / 1000;
-//        System.out.println(distanciaKm);
-        monto = monto.add(tarifa.getMontoKm().multiply(BigDecimal.valueOf((distanciaKm))));
-        return monto;
+        return distanciaKm;
     }
 
     @Override

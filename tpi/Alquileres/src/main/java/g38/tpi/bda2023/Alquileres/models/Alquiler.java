@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Entity(name = "ALQUILERES")
@@ -54,5 +55,31 @@ public class Alquiler {
         this.idEstacionDev = idEstacionDev;
         this.estado = 2;
         this.fechaHoraDevolucion = LocalDateTime.now();
+    }
+
+    public BigDecimal calculateMonto(Alquiler alquiler, Tarifa tarifa, double distanciaKm) {
+        BigDecimal monto = BigDecimal.valueOf((0));
+        monto = monto.add(tarifa.getMontoFijoAlquiler());
+        Duration duration = Duration.between(alquiler.getFechaHoraRetiro(), alquiler.getFechaHoraDevolucion());
+        long horas;
+        long minutes;
+        try {
+            horas = duration.toHours();
+            minutes = duration.toMinutes() - horas*60;
+        }
+        catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("FechaHoraDevolucion is too far from FechaHoraRetiro");
+        }
+
+        if(minutes <= 31) {
+            monto = monto.add(tarifa.getMontoMinutoFraccion().multiply(BigDecimal.valueOf((minutes))));
+        }
+        else {
+            horas++;
+        }
+        monto = monto.add(tarifa.getMontoHora().multiply(BigDecimal.valueOf(horas)));
+
+        monto = monto.add(tarifa.getMontoKm().multiply(BigDecimal.valueOf((distanciaKm))));
+        return monto;
     }
 }

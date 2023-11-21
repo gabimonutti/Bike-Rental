@@ -27,8 +27,6 @@ import static org.mockito.Mockito.when;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DataJpaTest
 public class AlquilerServiceTest {
-    @InjectMocks
-    private AlquilerServiceImpl alquilerService;
 
     @BeforeEach
     public void setup() {
@@ -54,13 +52,15 @@ public class AlquilerServiceTest {
         alquiler.setIdEstacionRet((long)1);
         alquiler.setIdEstacionDev((long)5);
 
+        double distancia = 10;
+
         // Verificar si getIdEstacionDev() es null antes de usarlo
         if (alquiler.getIdEstacionDev() != null) {
             // Llamar al método calculateMonto
-            BigDecimal monto = alquilerService.calculateMonto(alquiler, tarifa);
+            BigDecimal monto = alquiler.calculateMonto(alquiler, tarifa, distancia);
 
             // Verificar que el resultado es como se esperaba
-            assertEquals(BigDecimal.valueOf(23.65), monto.setScale(2, RoundingMode.HALF_UP));
+            assertEquals(BigDecimal.valueOf(32).setScale(2, RoundingMode.HALF_UP), monto.setScale(2, RoundingMode.HALF_UP));
         }
     }
 
