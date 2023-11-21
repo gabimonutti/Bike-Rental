@@ -34,14 +34,14 @@ public class EstacionServiceImpl implements EstacionService{
         double maxDistanceKm = 50;
 
         if(latitud > 90 | latitud < -90) { throw new IllegalStateException("Invalid latitud value"); }
-        if(longitud > 90 | longitud < -90) { throw new IllegalStateException("Invalid longitud value"); }
+        if(longitud > 180 | longitud < -180) { throw new IllegalStateException("Invalid longitud value"); }
 
         List<Estacion> estaciones = findAll();
         Estacion resultado = estaciones.stream()
                 .min(Comparator.comparingDouble(estacion -> distanciaService.calcularDistancia(latitud, longitud, estacion.getLatitud(), estacion.getLongitud())))
                 .orElse(null);
         if(distanciaService.calcularDistancia(latitud, longitud, resultado.getLatitud(), resultado.getLongitud())/1000 > maxDistanceKm) {
-            throw new IllegalStateException("Location is too far from stations");
+            throw new IllegalStateException("There are no stations within a range of 50 km from the given location.");
         }
         return resultado;
     }
@@ -53,6 +53,9 @@ public class EstacionServiceImpl implements EstacionService{
 
     @Override
     public Estacion create(String nombre, double latitud, double longitud) {
+        if(latitud > 90 | latitud < -90) { throw new IllegalStateException("Invalid latitud value"); }
+        if(longitud > 180 | longitud < -180) { throw new IllegalStateException("Invalid longitud value"); }
+
         val estacionId = identifierRepository.nextValue(Estacion.TABLE_NAME);
         val newEstacion = new Estacion((long)estacionId, nombre, latitud, longitud);
         return estacionRespository.save(newEstacion);

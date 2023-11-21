@@ -42,6 +42,5 @@ public class Estacion {
         this.fechaHoraCreacion = LocalDateTime.now();
         this.latitud = latitud;
         this.longitud = longitud;
-
     }
 }

@@ -15,7 +15,7 @@ public class InicioAlquilerResponse {
     private Long id;
     private Long idCliente;
     private int estado;
-    private EstacionResponse estacionRetiro;
+    private Long idEstacionRetiro;
     private LocalDateTime fechaHoraRetiro;
 
     public static InicioAlquilerResponse from (Alquiler alquiler) {
@@ -23,7 +23,7 @@ public class InicioAlquilerResponse {
                 .id(alquiler.getId())
                 .idCliente(alquiler.getIdCliente())
                 .estado(alquiler.getEstado())
-                .estacionRetiro(EstacionResponse.from(alquiler.getEstacionRetiro()))
+                .idEstacionRetiro(alquiler.getIdEstacionRet())
                 .fechaHoraRetiro(alquiler.getFechaHoraRetiro())
                 .build();
     }

@@ -5,6 +5,7 @@ import g38.tpi.bda2023.Alquileres.models.Estacion;
 import g38.tpi.bda2023.Alquileres.models.Tarifa;
 import g38.tpi.bda2023.Alquileres.repositories.AlquilerRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -19,18 +20,19 @@ public class AlquilerServiceImpl implements AlquilerService{
     private final AlquilerRepository alquilerRepository;
     private final TarifaService tarifaService;
     private final DistanciaService distanciaService;
+    private final EstacionService estacionService;
 
-    @Override public Alquiler start(long idCliente, Estacion estRetiro) {
+    @Override public Alquiler start(long idCliente, Long idEstRetiro) {
         long id = alquilerRepository.getMaxId() + 1;
-        Alquiler alquiler = new Alquiler(id, idCliente, estRetiro);
+        Alquiler alquiler = new Alquiler(id, idCliente, idEstRetiro);
         alquilerRepository.save(alquiler);
         return alquiler;
     }
 
-    @Override public Alquiler end(Alquiler alquiler, Estacion estRetiro, Estacion estDevolucion) {
+    @Override public Alquiler end(Alquiler alquiler, Long idEstDevolucion) {
         if(alquiler.isFinished()) { throw new IllegalArgumentException("Alquiler already finished"); }
 
-        alquiler.end(estRetiro, estDevolucion);
+        alquiler.end(idEstDevolucion);
         Tarifa tarifa = chooseTarifa(alquiler);
         alquiler.setTarifa(tarifa);
         BigDecimal monto = calculateMonto(alquiler, tarifa);
@@ -76,9 +78,15 @@ public class AlquilerServiceImpl implements AlquilerService{
         }
         monto = monto.add(tarifa.getMontoHora().multiply(BigDecimal.valueOf(horas)));
 
-        double distanciaKm = distanciaService.calcularDistancia(alquiler.getEstacionDevolucion().getLatitud(),
-                alquiler.getEstacionDevolucion().getLongitud(), alquiler.getEstacionRetiro().getLatitud(),
-                alquiler.getEstacionRetiro().getLongitud()) / 1000;
+
+        Estacion estacionRetiro = estacionService.findById(alquiler.getIdEstacionRet())
+                .orElseThrow(() -> new IllegalArgumentException("Estacion Retiro Not Found"));
+        Estacion estacionDevolucion = estacionService.findById(alquiler.getIdEstacionDev())
+                .orElseThrow(() -> new IllegalArgumentException("Estacion Devolucion Not Found"));;
+
+        double distanciaKm = distanciaService.calcularDistancia(estacionRetiro.getLatitud(),
+                estacionRetiro.getLongitud(), estacionDevolucion.getLatitud(),
+                estacionDevolucion.getLongitud()) / 1000;
         monto = monto.add(tarifa.getMontoKm().multiply(BigDecimal.valueOf((distanciaKm))));
         return monto;
     }

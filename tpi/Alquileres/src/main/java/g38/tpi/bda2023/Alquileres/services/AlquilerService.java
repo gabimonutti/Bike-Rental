@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AlquilerService {
-    Alquiler start(long idCliente, Estacion EstRetiro);
-    Alquiler end(Alquiler alquiler, Estacion estRetiro, Estacion estDevolucion);
+    Alquiler start(long idCliente, Long idEstRetiro);
+    Alquiler end(Alquiler alquiler, Long estDevolucion);
     Optional<Alquiler> findById(long id);
     List<Alquiler> findAll();
     List<Alquiler> findAllByMontoGreaterThan(BigDecimal monto);

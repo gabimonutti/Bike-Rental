@@ -23,8 +23,8 @@ public class AlquilerResponse {
     private Long id;
     private Long idCliente;
     private int estado;
-    private EstacionResponse estacionRetiro;
-    private Optional<EstacionResponse> estacionDevolucion;
+    private Long idEstacionRetiro;
+    private Long idEstacionDevolucion;
     private LocalDateTime fechaHoraRetiro;
     private LocalDateTime fechaHoraDevolucion;
     private String monto;
@@ -35,11 +35,8 @@ public class AlquilerResponse {
                 .id(alquiler.getId())
                 .idCliente(alquiler.getIdCliente())
                 .estado(alquiler.getEstado())
-                .estacionRetiro(EstacionResponse.from(alquiler.getEstacionRetiro()))
-                //estacionDevolucion puede ser null
-                .estacionDevolucion(alquiler.getEstacionDevolucion() != null ?
-                        Optional.of(EstacionResponse.from(alquiler.getEstacionDevolucion())) :
-                        Optional.empty())
+                .idEstacionRetiro(alquiler.getIdEstacionRet())
+                .idEstacionDevolucion(alquiler.getIdEstacionDev())
                 .fechaHoraRetiro(alquiler.getFechaHoraRetiro())
                 //fecha hora Devolucion puede ser null
                 .fechaHoraDevolucion(alquiler.getFechaHoraDevolucion())

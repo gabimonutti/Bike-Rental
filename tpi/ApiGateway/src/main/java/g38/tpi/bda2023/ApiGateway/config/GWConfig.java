@@ -37,13 +37,13 @@ public class GWConfig {
                         .hasRole("ADMINISTRADOR")
 
                         .pathMatchers(HttpMethod.GET,"/api/estaciones/**")
-                        .hasRole("CLIENTE")
+                        .hasAnyRole("CLIENTE", "ADMINISTRADOR")
 
                         .pathMatchers(HttpMethod.POST,"/api/alquileres/**")
-                        .hasRole("CLIENTE")
+                        .hasAnyRole("CLIENTE", "ADMINISTRADOR")
 
                         .pathMatchers(HttpMethod.PATCH,"/api/alquileres/**")
-                        .hasRole("CLIENTE")
+                        .hasAnyRole("CLIENTE", "ADMINISTRADOR")
 
                         .anyExchange()
                         .authenticated()

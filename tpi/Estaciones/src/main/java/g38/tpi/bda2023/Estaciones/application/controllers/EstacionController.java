@@ -71,14 +71,14 @@ public class EstacionController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> create(@Valid @RequestBody CreateEstacionRequest estacionRequest) {
+    public ResponseEntity<Object> create(@RequestBody CreateEstacionRequest estacionRequest) {
         try {
             val estacion = estacionService.create(
                     estacionRequest.getNombre(),
                     estacionRequest.getLatitud(),
                     estacionRequest.getLongitud());
             return ResponseHandler.success(EstacionResponse.from(estacion));
-        } catch (IllegalArgumentException | ConstraintViolationException e) {
+        } catch (IllegalArgumentException | IllegalStateException | ConstraintViolationException e) {
             // por algun motivo las validaciones hechas con annotations no le lee el mensaje
             return ResponseHandler.badRequest(e.getMessage());
         } catch (Exception e) {
