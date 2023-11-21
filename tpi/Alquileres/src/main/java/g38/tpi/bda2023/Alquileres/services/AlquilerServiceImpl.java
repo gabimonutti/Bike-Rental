@@ -54,7 +54,7 @@ public class AlquilerServiceImpl implements AlquilerService{
         return tarifa.get();
     }
 
-    public BigDecimal calculateMonto(Alquiler alquiler, Tarifa tarifa) {
+    private BigDecimal calculateMonto(Alquiler alquiler, Tarifa tarifa) {
         BigDecimal monto = BigDecimal.valueOf((0));
         monto = monto.add(tarifa.getMontoFijoAlquiler());
         Duration duration = Duration.between(alquiler.getFechaHoraRetiro(), alquiler.getFechaHoraDevolucion());
